@@ -1,0 +1,9 @@
+[submodule "support_samples"]
+	path = support_samples
+	url = https://github.com/eduardo-ufmg/support_samples
+[submodule "sparse_rbf"]
+	path = sparse_rbf
+	url = https://github.com/eduardo-ufmg/sparse_rbf
+[submodule "similarity_space"]
+	path = similarity_space
+	url = https://github.com/eduardo-ufmg/similarity_space
