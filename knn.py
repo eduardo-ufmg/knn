@@ -8,14 +8,14 @@ reduce the training set to only "support samples" for faster predictions.
 
 import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
-from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
+from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 
-from sparse_rbf.sparse_multivariate_rbf_kernel import sparse_multivarite_rbf_kernel
 from similarity_space.similarity_space import similarity_space
+from sparse_rbf.sparse_multivariate_rbf_kernel import sparse_multivarite_rbf_kernel
 from support_samples.support_samples import support_samples
 
-__all__ = ['KNNClassifier']
+__all__ = ["KNNClassifier"]
 
 
 class KNNClassifier(BaseEstimator, ClassifierMixin):
@@ -58,6 +58,7 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
     classes_ : np.ndarray of shape (n_classes,)
         The unique class labels seen during the `fit` process.
     """
+
     def __init__(self, h: float = 1.0, k: int = 10, use_support_samples: bool = True):
         self.h = h
         self.k = k
@@ -134,22 +135,22 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
 
         # --- 4. Normalize to get probabilities ---
         Q_dense = Q.toarray()
-        
+
         # Sum of similarities for each test sample across all classes
         q_sum = Q_dense.sum(axis=1, keepdims=True)
-        
+
         # Handle cases where a test sample has zero similarity to all training samples
         # by assigning a uniform probability distribution across all classes.
         n_classes = len(self.classes_)
         # Use a small epsilon to avoid division by zero
-        q_sum[q_sum == 0] = 1.0 
-        
+        q_sum[q_sum == 0] = 1.0
+
         probabilities = Q_dense / q_sum
 
         # For rows that originally summed to zero, assign uniform probability
         zero_sum_mask = (q_sum == 1.0).flatten() & (Q_dense.sum(axis=1) == 0)
         if np.any(zero_sum_mask):
-             probabilities[zero_sum_mask, :] = 1 / n_classes
+            probabilities[zero_sum_mask, :] = 1 / n_classes
 
         return probabilities
 
