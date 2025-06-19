@@ -1,6 +1,9 @@
 numpy
 scipy
 scikit-learn
+matplotlib
+pandas
+seaborn
 black
 isort
 pre-commit
