@@ -7,3 +7,6 @@
 [submodule "similarity_space"]
 	path = similarity_space
 	url = https://github.com/eduardo-ufmg/similarity_space
+[submodule "store_datasets"]
+	path = store_datasets
+	url = https://github.com/eduardo-ufmg/store_datasets.git
