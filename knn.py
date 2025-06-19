@@ -1,12 +1,7 @@
-"""
-This module provides a K-Nearest Neighbors classifier that is compatible with
-scikit-learn and optimized for performance and memory efficiency.
-
-It uses a sparse RBF kernel for similarity computation and can optionally
-reduce the training set to only "support samples" for faster predictions.
-"""
+# knn/knn.py
 
 import numpy as np
+from scipy.sparse import csr_matrix
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils.multiclass import unique_labels
 from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
@@ -15,48 +10,48 @@ from similarity_space.similarity_space import similarity_space
 from sparse_rbf.sparse_multivariate_rbf_kernel import sparse_multivarite_rbf_kernel
 from support_samples.support_samples import support_samples
 
-__all__ = ["KNNClassifier"]
-
 
 class KNNClassifier(BaseEstimator, ClassifierMixin):
     """
-    A K-Nearest Neighbors classifier based on a sparse RBF kernel and similarity space.
+    A K-Nearest Neighbors classifier based on a sparse RBF kernel and a
+    similarity space.
 
-    This classifier is designed for performance and memory efficiency. It can optionally
-    use a data reduction technique based on support samples to speed up computations.
+    This classifier is fully compatible with the Scikit-learn API. It assigns
+    to each sample the label of the class with the highest similarity, which is
+    computed by summing RBF kernel values over reference samples of the same
+    class.
 
-    For each test sample, the classifier assigns the label of the class that it has
-    the highest total similarity to, based on a sparse RBF kernel.
+    For efficiency, the RBF kernel is computed sparsely, considering only the `k`
+    nearest reference samples. Additionally, the set of reference samples can be
+    reduced to only "support samples" that lie on class boundaries.
 
     Parameters
     ----------
     h : float, default=1.0
-        The bandwidth parameter (length scale) for the RBF kernel. This parameter
-        controls the "width" of the Gaussian kernel. Must be a positive number.
+        The bandwidth parameter (length scale) of the RBF kernel. Must be
+        positive.
 
     k : int, default=10
-        The number of nearest neighbors to consider for each sample when computing
-        the sparse RBF kernel. This is what makes the computation efficient, as
-        it avoids calculating similarities to all points.
+        The number of nearest neighbors to use for the sparse RBF kernel
+        computation.
 
     use_support_samples : bool, default=True
-        If True, the classifier will be trained on a reduced subset of the training
-        data composed of "support samples". These are samples that lie on the
-        boundaries between classes, which can lead to faster predictions with
-        little to no loss in accuracy.
+        If True, the training data is pre-processed to find support samples,
+        which are then used as the reference set for predictions. This can
+        improve performance and memory efficiency.
 
     Attributes
     ----------
-    X_fit_ : np.ndarray
-        The training data that the classifier is fitted on. If `use_support_samples`
-        is True, this will be the subset of support samples. Otherwise, it will
-        be the full training set.
+    classes_ : ndarray of shape (n_classes,)
+        The unique class labels seen during `fit`.
 
-    y_fit_ : np.ndarray
-        The labels corresponding to `X_fit_`.
+    X_ref_ : ndarray of shape (n_references, n_features)
+        The reference samples used for prediction. This will be the support
+        samples if `use_support_samples` is True and support samples are found,
+        otherwise it's the full training set.
 
-    classes_ : np.ndarray of shape (n_classes,)
-        The unique class labels seen during the `fit` process.
+    y_ref_ : ndarray of shape (n_references,)
+        The labels for the reference samples.
     """
 
     def __init__(self, h: float = 1.0, k: int = 10, use_support_samples: bool = True):
@@ -66,7 +61,10 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
 
     def fit(self, X, y):
         """
-        Fit the K-NN classifier from the training dataset.
+        Fit the KNN classifier from the training dataset.
+
+        If `use_support_samples` is True, this method will identify support
+        samples from the training data to use as references for prediction.
 
         Parameters
         ----------
@@ -80,103 +78,114 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         self : object
             Returns the instance itself.
         """
-        # --- 1. Input Validation (Scikit-learn standard) ---
-        X, y = check_X_y(X, y, accept_sparse=False)
+        # Validate input data and parameters
+        X, y = check_X_y(X, y)
+        if self.h <= 0:
+            raise ValueError("Bandwidth parameter h must be positive.")
+        if not isinstance(self.k, int) or self.k <= 0:
+            raise ValueError("Number of neighbors k must be a positive integer.")
 
         # Store the unique classes found in the training data
         self.classes_ = unique_labels(y)
 
-        # --- 2. Data Reduction (Optional) ---
-        # If enabled, find the support samples to reduce the size of the training set.
+        # Optionally, reduce the training data to only support samples
         if self.use_support_samples:
-            self.X_fit_, self.y_fit_ = support_samples(X, y)
-            # If support_samples returns an empty set (e.g., only one class is present),
-            # fall back to using the full dataset to avoid errors.
-            if self.X_fit_.shape[0] == 0:
-                self.X_fit_, self.y_fit_ = X, y
+            self.X_ref_, self.y_ref_ = support_samples(X, y)
+            # If no support samples are found (e.g., classes are well-separated),
+            # fall back to using the full training set as a reference.
+            if self.X_ref_.shape[0] == 0:
+                self.X_ref_ = X
+                self.y_ref_ = y
         else:
-            self.X_fit_, self.y_fit_ = X, y
+            self.X_ref_ = X
+            self.y_ref_ = y
 
+        self.is_fitted_ = True
         return self
 
-    def predict_proba(self, X):
+    def predict_proba(self, X: np.ndarray) -> np.ndarray:
         """
         Return probability estimates for the test data X.
 
-        The probability of a sample belonging to a class is the normalized sum of
-        similarities to all training samples of that class.
+        The probability of a sample belonging to a class is calculated as its
+        normalized similarity to that class.
 
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
-            The input samples to predict.
+            The test samples.
 
         Returns
         -------
-        p : array-like of shape (n_samples, n_classes)
-            The class probabilities of the input samples. Each row corresponds
-            to a sample and contains the probabilities for each class in the
-            order of `self.classes_`.
+        p : ndarray of shape (n_samples, n_classes)
+            The class probabilities of the input samples. Classes are ordered
+            lexicographically as in `self.classes_`.
         """
-        # --- 1. Check if the classifier has been fitted ---
         check_is_fitted(self)
-        X = check_array(X, accept_sparse=False)
+        X = check_array(X)
 
-        # --- 2. Compute Sparse Similarity Matrix ---
-        # This computes the RBF kernel similarity between each sample in X and the
-        # k-nearest neighbors in our fitted training data `self.X_fit_`.
-        # The result S is a sparse matrix of shape (n_test_samples, n_fit_samples).
-        S = sparse_multivarite_rbf_kernel(X, self.X_fit_, h=self.h, k=self.k)
+        # 1. Compute the sparse RBF kernel matrix between test samples (X) and
+        # reference samples (self.X_ref_).
+        # Ensure k is not larger than the number of available reference points.
+        k = min(self.k, self.X_ref_.shape[0])
+        kernel_matrix = sparse_multivarite_rbf_kernel(X, self.X_ref_, h=self.h, k=k)
 
-        # --- 3. Transform to Similarity Space ---
-        # This function sums the similarities for each class. The result Q is a
-        # sparse matrix of shape (n_test_samples, n_classes).
-        Q = similarity_space(S, self.y_fit_)
+        # 2. Calculate the similarity space matrix. This sums the kernel values
+        # for each class, resulting in a matrix where each column represents
+        # the total similarity to a class present in the reference set.
+        q_ref = similarity_space(kernel_matrix, self.y_ref_)
 
-        # --- 4. Normalize to get probabilities ---
-        Q_dense = Q.toarray()
-
-        # Sum of similarities for each test sample across all classes
-        q_sum = Q_dense.sum(axis=1, keepdims=True)
-
-        # Handle cases where a test sample has zero similarity to all training samples
-        # by assigning a uniform probability distribution across all classes.
+        # The similarity_space function only returns columns for classes present
+        # in `self.y_ref_`. We need to map these to the full set of classes
+        # seen during `fit`.
+        n_samples = X.shape[0]
         n_classes = len(self.classes_)
-        # Use a small epsilon to avoid division by zero
-        q_sum[q_sum == 0] = 1.0
+        Q = np.zeros((n_samples, n_classes))
 
-        probabilities = Q_dense / q_sum
+        # Get the classes present in the reference set
+        ref_classes = np.unique(self.y_ref_)
 
-        # For rows that originally summed to zero, assign uniform probability
-        zero_sum_mask = (q_sum == 1.0).flatten() & (Q_dense.sum(axis=1) == 0)
-        if np.any(zero_sum_mask):
-            probabilities[zero_sum_mask, :] = 1 / n_classes
+        # Find the column indices in the final Q matrix that correspond to the
+        # classes in the reference set.
+        class_indices = np.searchsorted(self.classes_, ref_classes)
+        Q[:, class_indices] = q_ref
+
+        # 3. Normalize the similarity scores to get probabilities.
+        # Handle cases where a sample has zero similarity to all classes to
+        # avoid division by zero.
+        row_sums = Q.sum(axis=1, keepdims=True)
+
+        # Default to uniform probability for zero-similarity samples
+        uniform_prob = 1.0 / n_classes
+
+        # Normalize rows with non-zero sums
+        probabilities = np.full(Q.shape, uniform_prob)
+        np.divide(Q, row_sums, out=probabilities, where=row_sums > 0)
 
         return probabilities
 
-    def predict(self, X):
+    def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Predict the class labels for the provided data.
 
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
-            The input samples to predict.
+            The test samples.
 
         Returns
         -------
         y_pred : ndarray of shape (n_samples,)
             Class labels for each data sample.
         """
-        # --- 1. Get Probability Estimates ---
-        probas = self.predict_proba(X)
+        check_is_fitted(self)
+        X = check_array(X)
 
-        # --- 2. Find the most likely class ---
-        # `np.argmax` returns the index of the class with the highest probability.
-        max_indices = np.argmax(probas, axis=1)
+        # Get the probability estimates
+        probabilities = self.predict_proba(X)
 
-        # --- 3. Map indices to class labels ---
-        # `self.classes_` holds the actual labels in the correct order.
-        y_pred = self.classes_[max_indices]
+        # Find the index of the class with the highest probability for each sample
+        max_prob_indices = np.argmax(probabilities, axis=1)
 
-        return y_pred
+        # Map these indices back to the actual class labels
+        return self.classes_[max_prob_indices]
