@@ -1,5 +1,3 @@
-# knn/knn.py
-
 import numpy as np
 from scipy.sparse import csr_matrix
 from sklearn.base import BaseEstimator, ClassifierMixin
@@ -78,21 +76,16 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         self : object
             Returns the instance itself.
         """
-        # Validate input data and parameters
         X, y = check_X_y(X, y)
         if self.h <= 0:
             raise ValueError("Bandwidth parameter h must be positive.")
         if not isinstance(self.k, int) or self.k <= 0:
             raise ValueError("Number of neighbors k must be a positive integer.")
 
-        # Store the unique classes found in the training data
         self.classes_ = unique_labels(y)
 
-        # Optionally, reduce the training data to only support samples
         if self.use_support_samples:
             self.X_ref_, self.y_ref_ = support_samples(X, y)
-            # If no support samples are found (e.g., classes are well-separated),
-            # fall back to using the full training set as a reference.
             if self.X_ref_.shape[0] == 0:
                 self.X_ref_ = X
                 self.y_ref_ = y
@@ -124,41 +117,19 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         check_is_fitted(self)
         X = check_array(X)
 
-        # 1. Compute the sparse RBF kernel matrix between test samples (X) and
-        # reference samples (self.X_ref_).
-        # Ensure k is not larger than the number of available reference points.
         k = min(self.k, self.X_ref_.shape[0])
         kernel_matrix = sparse_multivarite_rbf_kernel(X, self.X_ref_, h=self.h, k=k)
 
-        # 2. Calculate the similarity space matrix. This sums the kernel values
-        # for each class, resulting in a matrix where each column represents
-        # the total similarity to a class present in the reference set.
-        q_ref = similarity_space(kernel_matrix, self.y_ref_)
+        # Calculate the similarity space matrix. By passing `classes=self.classes_`,
+        # we ensure the output matrix `Q` has a column for every class seen
+        # during training, in the correct order.
+        Q = similarity_space(kernel_matrix, self.y_ref_, classes=self.classes_)
 
-        # The similarity_space function only returns columns for classes present
-        # in `self.y_ref_`. We need to map these to the full set of classes
-        # seen during `fit`.
-        n_samples = X.shape[0]
-        n_classes = len(self.classes_)
-        Q = np.zeros((n_samples, n_classes))
-
-        # Get the classes present in the reference set
-        ref_classes = np.unique(self.y_ref_)
-
-        # Find the column indices in the final Q matrix that correspond to the
-        # classes in the reference set.
-        class_indices = np.searchsorted(self.classes_, ref_classes)
-        Q[:, class_indices] = q_ref
-
-        # 3. Normalize the similarity scores to get probabilities.
-        # Handle cases where a sample has zero similarity to all classes to
-        # avoid division by zero.
         row_sums = Q.sum(axis=1, keepdims=True)
 
-        # Default to uniform probability for zero-similarity samples
+        n_classes = len(self.classes_)
         uniform_prob = 1.0 / n_classes
 
-        # Normalize rows with non-zero sums
         probabilities = np.full(Q.shape, uniform_prob)
         np.divide(Q, row_sums, out=probabilities, where=row_sums > 0)
 
@@ -181,11 +152,7 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         check_is_fitted(self)
         X = check_array(X)
 
-        # Get the probability estimates
         probabilities = self.predict_proba(X)
-
-        # Find the index of the class with the highest probability for each sample
         max_prob_indices = np.argmax(probabilities, axis=1)
 
-        # Map these indices back to the actual class labels
         return self.classes_[max_prob_indices]
