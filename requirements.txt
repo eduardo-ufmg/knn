@@ -4,6 +4,9 @@ scikit-learn
 matplotlib
 pandas
 seaborn
+ucimlrepo
+pyarrow
+fastparquet
 black
 isort
 pre-commit
