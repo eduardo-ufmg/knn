@@ -1,15 +1,13 @@
 import time
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier as SklearnKNN
 from sklearn.preprocessing import StandardScaler
 
-# --- Important ---
-# Ensure that this script is run from the root of your project directory
-# so that it can correctly import the 'knn' module.
 from knn import KNNClassifier
 
 # Define the directory where datasets are stored
@@ -39,7 +37,7 @@ def run_single_experiment(dataset_path: Path):
 
     # Stratified split to maintain class distribution
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=0, stratify=y
+        X, y, test_size=0.3, random_state=0, stratify=np.asarray(y)
     )
 
     # Scale data for fair comparison in distance-based algorithms
@@ -51,7 +49,7 @@ def run_single_experiment(dataset_path: Path):
     K = 15  # Number of neighbors for both classifiers
     H = 1.0  # Bandwidth for our custom classifier's RBF kernel
 
-    results = {"dataset": dataset_path.stem}
+    results: dict[str, object] = {"dataset": dataset_path.stem}
 
     # --- 4. Evaluate Custom KNNClassifier ---
     print("Evaluating Custom KNNClassifier...")
@@ -80,8 +78,7 @@ def run_single_experiment(dataset_path: Path):
 
     # --- 5. Evaluate Scikit-learn's KNeighborsClassifier ---
     print("Evaluating Sklearn KNeighborsClassifier...")
-    # Using 'uniform' weights for the most direct comparison
-    sklearn_knn = SklearnKNN(n_neighbors=K, weights="uniform", algorithm="auto")
+    sklearn_knn = SklearnKNN(n_neighbors=K)
 
     # Train
     start_time = time.perf_counter()
