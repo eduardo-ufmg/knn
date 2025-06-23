@@ -1,0 +1,15 @@
+{
+    "model_name": "SklearnKNeighborsClassifier",
+    "dataset": "yeast",
+    "hyperparameters": {
+        "n_neighbors": 15
+    },
+    "metrics": {
+        "accuracy": 0.9983593109105825,
+        "train_time_seconds": 0.001196359982714057,
+        "predict_time_seconds": 0.0772909420193173
+    },
+    "metadata": {
+        "original_train_samples": 5686
+    }
+}

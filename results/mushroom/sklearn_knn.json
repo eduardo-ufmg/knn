@@ -1,0 +1,15 @@
+{
+    "model_name": "SklearnKNeighborsClassifier",
+    "dataset": "mushroom",
+    "hyperparameters": {
+        "n_neighbors": 15
+    },
+    "metrics": {
+        "accuracy": 0.9983593109105825,
+        "train_time_seconds": 0.0011395710171200335,
+        "predict_time_seconds": 0.05807985499268398
+    },
+    "metadata": {
+        "original_train_samples": 5686
+    }
+}

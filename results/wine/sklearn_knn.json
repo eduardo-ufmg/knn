@@ -1,0 +1,15 @@
+{
+    "model_name": "SklearnKNeighborsClassifier",
+    "dataset": "wine",
+    "hyperparameters": {
+        "n_neighbors": 15
+    },
+    "metrics": {
+        "accuracy": 0.9814814814814815,
+        "train_time_seconds": 0.0006678890204057097,
+        "predict_time_seconds": 0.004720346012618393
+    },
+    "metadata": {
+        "original_train_samples": 124
+    }
+}

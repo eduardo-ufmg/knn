@@ -1,0 +1,18 @@
+{
+    "model_name": "CustomKNNClassifier",
+    "dataset": "phoneme",
+    "hyperparameters": {
+        "k": 15,
+        "h": 1.0,
+        "use_support_samples": true
+    },
+    "metrics": {
+        "accuracy": 0.8403205918618989,
+        "train_time_seconds": 1.3417151649482548,
+        "predict_time_seconds": 0.017936361022293568
+    },
+    "metadata": {
+        "original_train_samples": 3782,
+        "reference_samples_used": 1897
+    }
+}

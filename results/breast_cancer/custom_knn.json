@@ -1,0 +1,18 @@
+{
+    "model_name": "CustomKNNClassifier",
+    "dataset": "breast_cancer",
+    "hyperparameters": {
+        "k": 15,
+        "h": 1.0,
+        "use_support_samples": true
+    },
+    "metrics": {
+        "accuracy": 0.9532163742690059,
+        "train_time_seconds": 0.059470563021022826,
+        "predict_time_seconds": 0.0023271049722097814
+    },
+    "metadata": {
+        "original_train_samples": 398,
+        "reference_samples_used": 173
+    }
+}

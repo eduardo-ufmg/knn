@@ -1,0 +1,15 @@
+{
+    "model_name": "SklearnKNeighborsClassifier",
+    "dataset": "mnist_784",
+    "hyperparameters": {
+        "n_neighbors": 15
+    },
+    "metrics": {
+        "accuracy": 0.9342857142857143,
+        "train_time_seconds": 0.024255395983345807,
+        "predict_time_seconds": 18.35296746500535
+    },
+    "metadata": {
+        "original_train_samples": 49000
+    }
+}

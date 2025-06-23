@@ -1,0 +1,15 @@
+{
+    "model_name": "SklearnKNeighborsClassifier",
+    "dataset": "phoneme",
+    "hyperparameters": {
+        "n_neighbors": 15
+    },
+    "metrics": {
+        "accuracy": 0.8477188655980271,
+        "train_time_seconds": 0.002529221004806459,
+        "predict_time_seconds": 0.11419507197570056
+    },
+    "metadata": {
+        "original_train_samples": 3782
+    }
+}

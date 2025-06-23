@@ -1,0 +1,18 @@
+{
+    "model_name": "CustomKNNClassifier",
+    "dataset": "car_evaluation",
+    "hyperparameters": {
+        "k": 15,
+        "h": 1.0,
+        "use_support_samples": true
+    },
+    "metrics": {
+        "accuracy": 0.8921001926782274,
+        "train_time_seconds": 0.7016529489774257,
+        "predict_time_seconds": 0.003968433011323214
+    },
+    "metadata": {
+        "original_train_samples": 1209,
+        "reference_samples_used": 974
+    }
+}

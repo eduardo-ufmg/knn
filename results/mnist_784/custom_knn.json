@@ -1,0 +1,18 @@
+{
+    "model_name": "CustomKNNClassifier",
+    "dataset": "mnist_784",
+    "hyperparameters": {
+        "k": 15,
+        "h": 1.0,
+        "use_support_samples": true
+    },
+    "metrics": {
+        "accuracy": 0.9388571428571428,
+        "train_time_seconds": 3072.280471337959,
+        "predict_time_seconds": 12.57301977003226
+    },
+    "metadata": {
+        "original_train_samples": 49000,
+        "reference_samples_used": 33549
+    }
+}

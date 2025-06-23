@@ -1,0 +1,18 @@
+{
+    "model_name": "CustomKNNClassifier",
+    "dataset": "seeds",
+    "hyperparameters": {
+        "k": 15,
+        "h": 1.0,
+        "use_support_samples": true
+    },
+    "metrics": {
+        "accuracy": 0.7230769230769231,
+        "train_time_seconds": 0.17385037400526926,
+        "predict_time_seconds": 0.0027136210119351745
+    },
+    "metadata": {
+        "original_train_samples": 302,
+        "reference_samples_used": 278
+    }
+}

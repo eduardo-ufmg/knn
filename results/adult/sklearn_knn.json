@@ -1,0 +1,15 @@
+{
+    "model_name": "SklearnKNeighborsClassifier",
+    "dataset": "adult",
+    "hyperparameters": {
+        "n_neighbors": 15
+    },
+    "metrics": {
+        "accuracy": 0.5481471371050297,
+        "train_time_seconds": 0.004743751022033393,
+        "predict_time_seconds": 1.737306302995421
+    },
+    "metadata": {
+        "original_train_samples": 34189
+    }
+}

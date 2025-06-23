@@ -1,0 +1,15 @@
+{
+    "model_name": "SklearnKNeighborsClassifier",
+    "dataset": "iris",
+    "hyperparameters": {
+        "n_neighbors": 15
+    },
+    "metrics": {
+        "accuracy": 0.9555555555555556,
+        "train_time_seconds": 0.0005818009958602488,
+        "predict_time_seconds": 0.004092021961696446
+    },
+    "metadata": {
+        "original_train_samples": 105
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "model_name": "CustomKNNClassifier",
+    "dataset": "fashion_mnist",
+    "hyperparameters": {
+        "k": 15,
+        "h": 1.0,
+        "use_support_samples": true
+    },
+    "metrics": {
+        "accuracy": 0.844047619047619,
+        "train_time_seconds": 5490.177643348987,
+        "predict_time_seconds": 12.504519332025666
+    },
+    "metadata": {
+        "original_train_samples": 49000,
+        "reference_samples_used": 33317
+    }
+}

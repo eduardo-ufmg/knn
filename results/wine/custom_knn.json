@@ -1,0 +1,18 @@
+{
+    "model_name": "CustomKNNClassifier",
+    "dataset": "wine",
+    "hyperparameters": {
+        "k": 15,
+        "h": 1.0,
+        "use_support_samples": true
+    },
+    "metrics": {
+        "accuracy": 0.9814814814814815,
+        "train_time_seconds": 0.030742917966563255,
+        "predict_time_seconds": 0.002131387998815626
+    },
+    "metadata": {
+        "original_train_samples": 124,
+        "reference_samples_used": 89
+    }
+}

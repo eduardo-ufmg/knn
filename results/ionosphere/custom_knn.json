@@ -1,0 +1,18 @@
+{
+    "model_name": "CustomKNNClassifier",
+    "dataset": "ionosphere",
+    "hyperparameters": {
+        "k": 15,
+        "h": 1.0,
+        "use_support_samples": true
+    },
+    "metrics": {
+        "accuracy": 0.7924528301886793,
+        "train_time_seconds": 0.08951826900010929,
+        "predict_time_seconds": 0.002100254991091788
+    },
+    "metadata": {
+        "original_train_samples": 245,
+        "reference_samples_used": 138
+    }
+}
