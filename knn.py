@@ -1,3 +1,5 @@
+import numbers
+
 import numpy as np
 from scipy.sparse import csr_matrix
 from sklearn.base import BaseEstimator, ClassifierMixin
@@ -79,7 +81,7 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         X, y = check_X_y(X, y)
         if self.h <= 0:
             raise ValueError("Bandwidth parameter h must be positive.")
-        if not isinstance(self.k, int) or self.k <= 0:
+        if not isinstance(self.k, numbers.Integral) or self.k <= 0:
             raise ValueError("Number of neighbors k must be a positive integer.")
 
         self.classes_ = unique_labels(y)
