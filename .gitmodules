@@ -13,3 +13,6 @@
 [submodule "dissimilarity_score"]
 	path = dissimilarity_score
 	url = https://github.com/eduardo-ufmg/dissimilarity_score
+[submodule "spread_score"]
+	path = spread_score
+	url = https://github.com/eduardo-ufmg/spread_score
