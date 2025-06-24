@@ -16,3 +16,6 @@
 [submodule "spread_score"]
 	path = spread_score
 	url = https://github.com/eduardo-ufmg/spread_score
+[submodule "silhouette_score"]
+	path = silhouette_score
+	url = https://github.com/eduardo-ufmg/silhouette_score
