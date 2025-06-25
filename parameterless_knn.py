@@ -109,7 +109,7 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
             verbose=False,  # Set to True for detailed progress
         )
 
-        if res is not None and hasattr(res, "x"):
+        if res is not None:
             self.h_ = res.x[0]
             self.k_ = res.x[1]
             print(f"Optimization complete. Best score: {-res.fun:.4f}")
