@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.model_selection import cross_val_score
@@ -60,7 +62,13 @@ class SklearnKNNParameterlessWrapper(BaseEstimator, ClassifierMixin):
         # 2. Define the objective function to be minimized
         @use_named_args(space)
         def objective(**params):
-            knn = KNeighborsClassifier(**params)
+            native_params = {
+                "n_neighbors": int(params["n_neighbors"]),
+                "weights": str(params["weights"]),
+                "metric": str(params["metric"]),
+            }
+
+            knn = KNeighborsClassifier(**native_params)
             # Use 10-fold cross-validation
             score = np.mean(cross_val_score(knn, X, y, cv=10, scoring="accuracy"))
             # We minimize the negative score because the optimizer finds minima
@@ -70,14 +78,18 @@ class SklearnKNNParameterlessWrapper(BaseEstimator, ClassifierMixin):
         print(f"Number of calls: {self.n_optimizer_calls}")
 
         # 3. Run the optimizer
-        res = gp_minimize(
-            objective,
-            space,
-            n_calls=self.n_optimizer_calls,
-            n_initial_points=10,  # Start with 10 random points
-            random_state=0,
-            verbose=False,  # Set to True for detailed progress
-        )
+        # This context manager will temporarily catch and handle warnings.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=UserWarning)
+
+            res = gp_minimize(
+                objective,
+                space,
+                n_calls=self.n_optimizer_calls,
+                n_initial_points=10,  # Start with 10 random points
+                random_state=0,
+                verbose=False,  # Set to True for detailed progress
+            )
 
         if res is None:
             raise RuntimeError("Bayesian optimization failed to return a valid result.")
