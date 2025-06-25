@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils.multiclass import unique_labels
@@ -100,14 +102,18 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
         print(f"Number of calls: {self.n_optimizer_calls}")
 
         # 3. Run the optimizer
-        res = gp_minimize(
-            objective,
-            space,
-            n_calls=self.n_optimizer_calls,
-            n_initial_points=10,  # Start with 10 random points
-            random_state=0,
-            verbose=False,  # Set to True for detailed progress
-        )
+        # This context manager will temporarily catch and handle warnings.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=UserWarning)
+
+            res = gp_minimize(
+                objective,
+                space,
+                n_calls=self.n_optimizer_calls,
+                n_initial_points=10,
+                random_state=0,
+                verbose=False,
+            )
 
         if res is not None:
             self.h_ = res.x[0]

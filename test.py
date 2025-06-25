@@ -1,4 +1,3 @@
-import random
 import time
 
 import matplotlib.pyplot as plt
@@ -8,8 +7,8 @@ from sklearn.datasets import make_classification
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
 
-from knn import KNNClassifier
 from parameterless_knn import ParameterlessKNNClassifier
+from sklearn_knn_parameterless_wrapper import SklearnKNNParameterlessWrapper
 
 
 def run_single_experiment(
@@ -19,7 +18,7 @@ def run_single_experiment(
     Trains, evaluates, and visualizes a single classifier instance.
 
     Args:
-        classifier: An unfitted classifier instance (e.g., KNNClassifier).
+        classifier: An unfitted classifier instance.
         X_train, X_test, y_train, y_test: The training and testing data.
         n_classes (int): The number of classes in the dataset.
         experiment_name (str): The name of the experiment for titles and logs.
@@ -33,15 +32,30 @@ def run_single_experiment(
     if isinstance(classifier, ParameterlessKNNClassifier):
         print(f"-> Optimization Metric: '{classifier.metric}'")
         print(f"-> Optimizer calls: {classifier.n_optimizer_calls}")
-    else:
-        print(f"-> Hyperparameters: h={classifier.h}, k={classifier.k}")
+    elif isinstance(classifier, SklearnKNNParameterlessWrapper):
+        print("-> Optimization Metric: '10-fold CV Accuracy'")
+        print(f"-> Optimizer calls: {classifier.n_optimizer_calls}")
 
     start_time = time.time()
     classifier.fit(X_train, y_train)
     end_time = time.time()
     print(f"\nTraining completed in {end_time - start_time:.4f} seconds.")
 
-    if hasattr(classifier, "X_ref_"):
+    # Display best parameters for optimizer-based classifiers
+    if isinstance(classifier, SklearnKNNParameterlessWrapper) and hasattr(
+        classifier, "best_params_"
+    ):
+        print(f"Best Scikit-learn KNN params found: {classifier.best_params_}")
+    elif (
+        isinstance(classifier, ParameterlessKNNClassifier)
+        and hasattr(classifier, "h_")
+        and hasattr(classifier, "k_")
+    ):
+        print(f"Best custom KNN params found: h={classifier.h_:.4f}, k={classifier.k_}")
+
+    if isinstance(classifier, ParameterlessKNNClassifier) and hasattr(
+        classifier, "X_ref_"
+    ):
         num_ref_samples = classifier.X_ref_.shape[0]
         print(
             f"Classifier is using {num_ref_samples} reference samples (out of "
@@ -92,13 +106,13 @@ def run_all_tests():
     """
     Runs a complete test suite for all implemented KNN classifiers.
     """
-    # --- 1. Experiment Configuration (Fixed for reproducibility) ---
+    # --- 1. Experiment Configuration ---
     print("Configuring the experiment...")
     RANDOM_STATE = 0
-    N_SAMPLES = 1000
-    N_FEATURES = 20
-    N_INFORMATIVE = 10
-    N_CLASSES = 4
+    N_SAMPLES = np.random.randint(500, 2000)
+    N_FEATURES = np.random.randint(5, 50)
+    N_INFORMATIVE = np.random.randint(1, N_FEATURES // 2 + 1)
+    N_CLASSES = np.random.randint(2, 10)
 
     # --- 2. Data Generation & Splitting ---
     print(
@@ -121,9 +135,6 @@ def run_all_tests():
     # --- 3. Define Experiments ---
     # A dictionary mapping experiment names to classifier instances.
     classifiers_to_test = {
-        "Original KNN (h=2.0, k=15)": KNNClassifier(
-            h=2.0, k=15, use_support_samples=True
-        ),
         "Parameterless KNN (dissimilarity)": ParameterlessKNNClassifier(
             metric="dissimilarity", n_optimizer_calls=25
         ),
@@ -132,6 +143,9 @@ def run_all_tests():
         ),
         "Parameterless KNN (spread)": ParameterlessKNNClassifier(
             metric="spread", n_optimizer_calls=25
+        ),
+        "Scikit-learn KNN Wrapper": SklearnKNNParameterlessWrapper(
+            n_optimizer_calls=25
         ),
     }
 
