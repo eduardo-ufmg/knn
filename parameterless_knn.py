@@ -76,15 +76,17 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
         if n_ref_samples <= 1:
             self.h_, self.k_ = 1.0, 3
             self.is_fitted_ = True
-            print("Warning: Not enough reference samples to optimize. Using defaults.")
+            warnings.warn(
+                "Not enough reference samples to optimize. Using defaults.", UserWarning
+            )
             return self
 
         # --- Bayesian Optimization ---
 
         # 1. Define the search space for h and k
         space = [
-            Real(1e-2, 1e1, "log-uniform", name="h"),
-            Integer(1, max(1, min(n_ref_samples - 1, 50)), name="k"),
+            Real(low=1e-2, high=1e1, name="h"),
+            Integer(low=1, high=max(1, n_ref_samples // 2), name="k"),
         ]
 
         # 2. Define the objective function to be minimized
@@ -94,12 +96,9 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
                 self.X_ref_, self.X_ref_, **params
             )
             Q = similarity_space(kernel_matrix, self.y_ref_, classes=self.classes_)
-            score = metric_func(Q, self.y_ref_)
+            score = metric_func(Q, self.y_ref_, **params)
             # We minimize the negative score because the optimizer finds minima
             return -score
-
-        print(f"Starting Bayesian optimization for '{self.metric_}' metric...")
-        print(f"Number of calls: {self.n_optimizer_calls}")
 
         # 3. Run the optimizer
         # This context manager will temporarily catch and handle warnings.
@@ -118,11 +117,9 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
         if res is not None:
             self.h_ = res.x[0]
             self.k_ = res.x[1]
-            print(f"Optimization complete. Best score: {-res.fun:.4f}")
-            print(f"Best params: h={self.h_:.4f}, k={self.k_}")
         else:
             self.h_, self.k_ = 1.0, 3
-            print("Warning: Optimization failed. Using default parameters.")
+            warnings.warn("Optimization failed. Using default parameters.", UserWarning)
 
         self.is_fitted_ = True
         return self

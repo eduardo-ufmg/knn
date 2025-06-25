@@ -26,7 +26,7 @@ def save_result(dataset_name: str, model_name: str, result_data: dict):
 
     The results are organized as `results/{dataset_name}/{model_name}.json`
 
-    Args:
+    Parameters:
         dataset_name: The name of the dataset used.
         model_name: The name of the model evaluated.
         result_data: A dictionary containing the experiment's results.
@@ -48,7 +48,7 @@ def save_all_stat_tests(dataset_name: str, all_stats_data: list[dict]):
     """
     Saves all statistical comparison results to a single JSON file.
 
-    Args:
+    Parameters:
         dataset_name: The name of the dataset used.
         all_stats_data: A list of dictionaries, each containing the results of one statistical test.
     """
@@ -69,7 +69,7 @@ def run_single_experiment(dataset_path: Path):
     all models, it performs Wilcoxon signed-rank tests to compare each custom
     optimization metric against the scikit-learn based wrapper.
 
-    Args:
+    Parameters:
         dataset_path: The path to the .parquet dataset file.
     """
     dataset_name = dataset_path.stem

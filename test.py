@@ -17,7 +17,7 @@ def run_single_experiment(
     """
     Trains, evaluates, and visualizes a single classifier instance.
 
-    Args:
+    Parameters:
         classifier: An unfitted classifier instance.
         X_train, X_test, y_train, y_test: The training and testing data.
         n_classes (int): The number of classes in the dataset.

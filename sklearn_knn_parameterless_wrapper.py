@@ -74,9 +74,6 @@ class SklearnKNNParameterlessWrapper(BaseEstimator, ClassifierMixin):
             # We minimize the negative score because the optimizer finds minima
             return -score
 
-        print("Starting Bayesian optimization for scikit-learn's KNN...")
-        print(f"Number of calls: {self.n_optimizer_calls}")
-
         # 3. Run the optimizer
         # This context manager will temporarily catch and handle warnings.
         with warnings.catch_warnings():
@@ -100,8 +97,6 @@ class SklearnKNNParameterlessWrapper(BaseEstimator, ClassifierMixin):
             "weights": res.x[1],
             "metric": res.x[2],
         }
-        print(f"Optimization complete. Best CV accuracy: {-res.fun:.4f}")
-        print(f"Best params: {self.best_params_}")
 
         # Fit the final model on the entire dataset with the best parameters
         self.knn_ = KNeighborsClassifier(**self.best_params_)
