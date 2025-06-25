@@ -19,3 +19,6 @@
 [submodule "silhouette_score"]
 	path = silhouette_score
 	url = https://github.com/eduardo-ufmg/silhouette_score
+[submodule "opposite_hyperplane"]
+	path = opposite_hyperplane
+	url = https://github.com/eduardo-ufmg/opposite_hyperplane.git
