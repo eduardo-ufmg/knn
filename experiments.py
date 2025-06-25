@@ -1,17 +1,19 @@
 import json
 import time
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
 from scipy.stats import wilcoxon
+from sklearn.base import BaseEstimator
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import StratifiedKFold
-from sklearn.neighbors import KNeighborsClassifier as SklearnKNN
 from sklearn.preprocessing import StandardScaler
 
-from knn import KNNClassifier
+# Import the parameter-less classifiers
+from parameterless_knn import ParameterlessKNNClassifier
+from sklearn_knn_parameterless_wrapper import SklearnKNNParameterlessWrapper
 
 # Define root directories for datasets and results
 DATASETS_DIR = Path("sets/")
@@ -42,31 +44,30 @@ def save_result(dataset_name: str, model_name: str, result_data: dict):
     print(f"    -> Saved {model_name} results to '{output_path}'")
 
 
-def save_stat_test_result(dataset_name: str, stat_data: dict):
+def save_all_stat_tests(dataset_name: str, all_stats_data: list[dict]):
     """
-    Saves the statistical comparison results to a JSON file.
+    Saves all statistical comparison results to a single JSON file.
 
     Args:
         dataset_name: The name of the dataset used.
-        stat_data: A dictionary containing the statistical test results.
+        all_stats_data: A list of dictionaries, each containing the results of one statistical test.
     """
     output_dir = RESULTS_DIR / dataset_name
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / "statistical_comparison.json"
+    output_path = output_dir / "statistical_comparisons.json"
     with open(output_path, "w") as f:
-        json.dump(stat_data, f, indent=4)
-    print(f"    -> Saved statistical analysis to '{output_path}'")
+        json.dump(all_stats_data, f, indent=4)
+    print(f"    -> Saved all statistical analyses to '{output_path}'")
 
 
 def run_single_experiment(dataset_path: Path):
     """
     Runs a comparative experiment for a single dataset using 10-fold cross-validation.
 
-    This function loads a dataset, then for each of the 10 folds, it trains and
-    evaluates each model. It captures performance metrics for each fold, calculates
-    the average and standard deviation, and saves the aggregated results. Finally,
-    it performs a Wilcoxon signed-rank test to compare the models' accuracies
-    and saves the statistical result.
+    This function evaluates multiple parameter-less KNN models. For each model,
+    it performs 10-fold cross-validation to measure performance. After evaluating
+    all models, it performs Wilcoxon signed-rank tests to compare each custom
+    optimization metric against the scikit-learn based wrapper.
 
     Args:
         dataset_path: The path to the .parquet dataset file.
@@ -79,119 +80,151 @@ def run_single_experiment(dataset_path: Path):
     X = data.drop("target", axis=1).values
     y = data["target"].values
 
-    # --- Hyperparameters ---
-    K = 15
-    H = 1.0
+    # --- Experiment Configuration ---
     N_SPLITS = 10
+    N_OPTIMIZER_CALLS = 25  # Number of calls for Bayesian Optimization
 
-    # --- 2. Setup Cross-Validation ---
+    # --- 2. Define Models for Evaluation ---
+    # A list of tuples, each containing a unique name and an unfitted model instance.
+    models_to_evaluate: list[tuple[str, Any]] = [
+        (
+            "parameterless_knn_dissimilarity",
+            ParameterlessKNNClassifier(
+                metric="dissimilarity", n_optimizer_calls=N_OPTIMIZER_CALLS
+            ),
+        ),
+        (
+            "parameterless_knn_silhouette",
+            ParameterlessKNNClassifier(
+                metric="silhouette", n_optimizer_calls=N_OPTIMIZER_CALLS
+            ),
+        ),
+        (
+            "parameterless_knn_spread",
+            ParameterlessKNNClassifier(
+                metric="spread", n_optimizer_calls=N_OPTIMIZER_CALLS
+            ),
+        ),
+        (
+            "sklearn_knn_wrapper",
+            SklearnKNNParameterlessWrapper(n_optimizer_calls=N_OPTIMIZER_CALLS),
+        ),
+    ]
+
+    # --- 3. Run Cross-Validation for Each Model ---
     skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=0)
+    all_fold_accuracies = {}
 
-    # Lists to store metrics for each fold
-    custom_knn_metrics = {"accuracies": [], "train_times": [], "predict_times": []}
-    sklearn_knn_metrics = {"accuracies": [], "train_times": [], "predict_times": []}
+    print(f"  Running {N_SPLITS}-Fold Cross-Validation for each model...")
+    for model_name, model in models_to_evaluate:
+        print(f"\n  Evaluating model: {model_name}")
+        fold_metrics = {"accuracies": [], "train_times": [], "predict_times": []}
 
-    # --- 3. Run Cross-Validation Loop ---
-    print(f"  Running {N_SPLITS}-Fold Cross-Validation...")
-    for fold, (train_index, test_index) in enumerate(skf.split(X, np.asarray(y))):
-        print(f"    - Fold {fold + 1}/{N_SPLITS}")
-        # Split data for the current fold
-        X_train, X_test = X[train_index], X[test_index]
-        y_train, y_test = y[train_index], y[test_index]
+        for fold, (train_index, test_index) in enumerate(skf.split(X, np.asarray(y))):
+            print(f"    - Fold {fold + 1}/{N_SPLITS}")
+            X_train, X_test = X[train_index], X[test_index]
+            y_train, y_test = y[train_index], y[test_index]
 
-        # Pre-process data: Fit on train set, transform both train and test
-        scaler = StandardScaler()
-        X_train_scaled = scaler.fit_transform(X_train)
-        X_test_scaled = scaler.transform(X_test)
+            # Pre-process data: Fit on train set, transform both
+            scaler = StandardScaler()
+            X_train_scaled = scaler.fit_transform(X_train)
+            X_test_scaled = scaler.transform(X_test)
 
-        # --- Evaluate Custom KNNClassifier ---
-        custom_knn = KNNClassifier(h=H, k=K, use_support_samples=True)
-        start_time = time.perf_counter()
-        custom_knn.fit(X_train_scaled, y_train)
-        custom_knn_metrics["train_times"].append(time.perf_counter() - start_time)
+            # --- Train ---
+            start_time = time.perf_counter()
+            model.fit(X_train_scaled, y_train)
+            fold_metrics["train_times"].append(time.perf_counter() - start_time)
 
-        start_time = time.perf_counter()
-        y_pred_custom = custom_knn.predict(X_test_scaled)
-        custom_knn_metrics["predict_times"].append(time.perf_counter() - start_time)
-        custom_knn_metrics["accuracies"].append(accuracy_score(y_test, y_pred_custom))
+            # --- Predict ---
+            start_time = time.perf_counter()
+            y_pred = model.predict(X_test_scaled)
+            fold_metrics["predict_times"].append(time.perf_counter() - start_time)
+            fold_metrics["accuracies"].append(accuracy_score(y_test, y_pred))
 
-        # --- Evaluate Scikit-learn's KNeighborsClassifier ---
-        sklearn_knn = SklearnKNN(n_neighbors=K)
-        start_time = time.perf_counter()
-        sklearn_knn.fit(X_train_scaled, y_train)
-        sklearn_knn_metrics["train_times"].append(time.perf_counter() - start_time)
-
-        start_time = time.perf_counter()
-        y_pred_sklearn = sklearn_knn.predict(X_test_scaled)
-        sklearn_knn_metrics["predict_times"].append(time.perf_counter() - start_time)
-        sklearn_knn_metrics["accuracies"].append(accuracy_score(y_test, y_pred_sklearn))
-
-    # --- 4. Aggregate and Save Results ---
-    print("  Aggregating and saving results...")
-    # Custom KNN results
-    custom_results = {
-        "model_name": "CustomKNNClassifier",
-        "dataset": dataset_name,
-        "hyperparameters": {"k": K, "h": H, "use_support_samples": True},
-        "metrics": {
-            "accuracy_mean": np.mean(custom_knn_metrics["accuracies"]),
-            "accuracy_std": np.std(custom_knn_metrics["accuracies"]),
-            "train_time_mean": np.mean(custom_knn_metrics["train_times"]),
-            "train_time_std": np.std(custom_knn_metrics["train_times"]),
-            "predict_time_mean": np.mean(custom_knn_metrics["predict_times"]),
-            "predict_time_std": np.std(custom_knn_metrics["predict_times"]),
-        },
-        "fold_metrics": custom_knn_metrics,
-    }
-    save_result(dataset_name, "custom_knn", custom_results)
-    print(
-        f"    Custom KNN Mean Accuracy: {custom_results['metrics']['accuracy_mean']:.4f} (+/- {custom_results['metrics']['accuracy_std']:.4f})"
-    )
-
-    # Scikit-learn KNN results
-    sklearn_results = {
-        "model_name": "SklearnKNeighborsClassifier",
-        "dataset": dataset_name,
-        "hyperparameters": {"n_neighbors": K},
-        "metrics": {
-            "accuracy_mean": np.mean(sklearn_knn_metrics["accuracies"]),
-            "accuracy_std": np.std(sklearn_knn_metrics["accuracies"]),
-            "train_time_mean": np.mean(sklearn_knn_metrics["train_times"]),
-            "train_time_std": np.std(sklearn_knn_metrics["train_times"]),
-            "predict_time_mean": np.mean(sklearn_knn_metrics["predict_times"]),
-            "predict_time_std": np.std(sklearn_knn_metrics["predict_times"]),
-        },
-        "fold_metrics": sklearn_knn_metrics,
-    }
-    save_result(dataset_name, "sklearn_knn", sklearn_results)
-    print(
-        f"    Sklearn KNN Mean Accuracy: {sklearn_results['metrics']['accuracy_mean']:.4f} (+/- {sklearn_results['metrics']['accuracy_std']:.4f})"
-    )
-
-    # --- 5. Perform Statistical Test for Equivalence ---
-    print("  Performing statistical test...")
-    alpha = 0.05
-    stat, p_value = wilcoxon(
-        custom_knn_metrics["accuracies"], sklearn_knn_metrics["accuracies"]
-    )
-    stat, p_value = cast(float, stat), cast(float, p_value)
-
-    if p_value > alpha:
-        conclusion = (
-            f"The models are statistically equivalent (p={p_value:.4f} > {alpha})."
+        # --- Aggregate and Save Results for the current model ---
+        model_results = {
+            "model_name": model_name,
+            "dataset": dataset_name,
+            "hyperparameters": model.get_params(),
+            "metrics": {
+                "accuracy_mean": np.mean(fold_metrics["accuracies"]),
+                "accuracy_std": np.std(fold_metrics["accuracies"]),
+                "train_time_mean": np.mean(fold_metrics["train_times"]),
+                "train_time_std": np.std(fold_metrics["train_times"]),
+                "predict_time_mean": np.mean(fold_metrics["predict_times"]),
+                "predict_time_std": np.std(fold_metrics["predict_times"]),
+            },
+            "fold_metrics": fold_metrics,
+        }
+        save_result(dataset_name, model_name, model_results)
+        print(
+            f"    -> Mean Accuracy: {model_results['metrics']['accuracy_mean']:.4f} "
+            f"(+/- {model_results['metrics']['accuracy_std']:.4f})"
         )
-    else:
-        conclusion = f"There is a significant difference between the models (p={p_value:.4f} <= {alpha})."
 
-    stat_results = {
-        "test_name": "Wilcoxon Signed-Rank Test",
-        "alpha": alpha,
-        "statistic": stat,
-        "p_value": p_value,
-        "conclusion": conclusion,
-    }
-    save_stat_test_result(dataset_name, stat_results)
-    print(f"    {conclusion}\n")
+        # Store accuracies for the final statistical comparison
+        all_fold_accuracies[model_name] = fold_metrics["accuracies"]
+
+    # --- 4. Perform and Save Statistical Comparisons ---
+    print("\n  Performing statistical tests...")
+    statistical_results = []
+    reference_model_name = "sklearn_knn_wrapper"
+    reference_accuracies = all_fold_accuracies.get(reference_model_name)
+
+    if reference_accuracies is None:
+        print(
+            f"  [Warning] Reference model '{reference_model_name}' not found. "
+            "Skipping statistical tests."
+        )
+        return
+
+    # Compare each custom model to the reference scikit-learn wrapper
+    for model_name, accuracies in all_fold_accuracies.items():
+        if model_name == reference_model_name:
+            continue
+
+        print(f"    - Comparing '{model_name}' vs '{reference_model_name}'")
+        alpha = 0.05
+        stat, p_value, conclusion = None, None, ""
+
+        try:
+            # Perform the Wilcoxon signed-rank test
+            stat, p_value = wilcoxon(
+                accuracies, reference_accuracies, zero_method="zsplit"
+            )
+            stat, p_value = cast(float, stat), cast(float, p_value)
+
+            # Interpret the p-value
+            if p_value > alpha:
+                conclusion = f"The models are statistically equivalent (p={p_value:.4f} > {alpha})."
+            else:
+                mean_diff = np.mean(accuracies) - np.mean(reference_accuracies)
+                if mean_diff > 0:
+                    conclusion = f"'{model_name}' is significantly better than '{reference_model_name}' (p={p_value:.4f} <= {alpha})."
+                else:
+                    conclusion = f"'{reference_model_name}' is significantly better than '{model_name}' (p={p_value:.4f} <= {alpha})."
+
+        except ValueError:
+            # This can occur if all accuracy differences are zero
+            stat, p_value = 0.0, 1.0
+            conclusion = "Could not perform Wilcoxon test as all differences are zero. Models are equivalent."
+
+        stat_result = {
+            "test_name": "Wilcoxon Signed-Rank Test",
+            "comparison": f"{model_name}_vs_{reference_model_name}",
+            "model_1": model_name,
+            "model_2": reference_model_name,
+            "alpha": alpha,
+            "statistic": stat,
+            "p_value": p_value,
+            "conclusion": conclusion,
+        }
+        statistical_results.append(stat_result)
+        print(f"      {conclusion}")
+
+    # Save all statistical results to a single file for the dataset
+    if statistical_results:
+        save_all_stat_tests(dataset_name, statistical_results)
 
 
 def main():
