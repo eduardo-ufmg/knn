@@ -23,8 +23,7 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
     A parameter-less K-Nearest Neighbors classifier that uses
     Bayesian Optimization to find optimal hyperparameters.
 
-    Parameters
-    ----------
+    Parameters:
     metric : str, default='dissimilarity'
         The metric to optimize. Options: "dissimilarity", "silhouette", "spread".
 
@@ -32,8 +31,7 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
         The number of evaluations for the Bayesian optimizer. More calls can lead
         to better parameters but increase fitting time.
 
-    Attributes
-    ----------
+    Attributes:
     h_ : float
         The best bandwidth parameter (length scale) found for the RBF kernel.
 

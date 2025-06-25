@@ -22,14 +22,12 @@ class SklearnKNNParameterlessWrapper(BaseEstimator, ClassifierMixin):
     The optimization is based on the 10-fold cross-validation accuracy
     on the training data.
 
-    Parameters
-    ----------
+    Parameters:
     n_optimizer_calls : int, default=25
         The number of evaluations for the Bayesian optimizer. More calls can lead
         to better parameters but increase fitting time.
 
-    Attributes
-    ----------
+    Attributes:
     best_params_ : dict
         The dictionary of best hyperparameters found by the optimizer.
 

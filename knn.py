@@ -25,8 +25,7 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
     nearest reference samples. Additionally, the set of reference samples can be
     reduced to only "support samples" that lie on class boundaries.
 
-    Parameters
-    ----------
+    Parameters:
     h : float, default=1.0
         The bandwidth parameter (length scale) of the RBF kernel. Must be
         positive.
@@ -40,8 +39,7 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         which are then used as the reference set for predictions. This can
         improve performance and memory efficiency.
 
-    Attributes
-    ----------
+    Attributes:
     classes_ : ndarray of shape (n_classes,)
         The unique class labels seen during `fit`.
 
@@ -52,6 +50,11 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
 
     y_ref_ : ndarray of shape (n_references,)
         The labels for the reference samples.
+
+    Q_ : ndarray of shape (n_samples, n_classes)
+        The similarity space matrix, where each row corresponds to a sample and
+        each column corresponds to a class. The values represent the
+        similarity of the sample to each class based on the reference samples.
     """
 
     def __init__(self, h: float = 1.0, k: int = 10, use_support_samples: bool = True):
@@ -126,6 +129,8 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         # we ensure the output matrix `Q` has a column for every class seen
         # during training, in the correct order.
         Q = similarity_space(kernel_matrix, self.y_ref_, classes=self.classes_)
+
+        self.Q_ = Q
 
         row_sums = Q.sum(axis=1, keepdims=True)
 
