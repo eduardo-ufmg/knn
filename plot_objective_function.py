@@ -35,7 +35,7 @@ def plot_objective_function():
     )
     # 2. Create a suitable hyperparameter grid for the KNN classifier
     h_range = np.linspace(0.01, 10.0, 10)
-    k_range = np.arange(5, 55, 10)
+    k_range = np.arange(5, 60, 10)
     dissimilarity_scores = np.zeros((len(h_range), len(k_range)))
     silhouette_scores = np.zeros((len(h_range), len(k_range)))
     spread_scores = np.zeros((len(h_range), len(k_range)))
