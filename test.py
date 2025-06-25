@@ -45,7 +45,10 @@ def run_single_experiment(
     if isinstance(classifier, SklearnKNNParameterlessWrapper) and hasattr(
         classifier, "best_params_"
     ):
-        print(f"Best Scikit-learn KNN params found: {classifier.best_params_}")
+        best_params_str = ", ".join(
+            f"{k}={v}" for k, v in classifier.best_params_.items()
+        )
+        print(f"Best Scikit-learn KNN params found: {best_params_str}")
     elif (
         isinstance(classifier, ParameterlessKNNClassifier)
         and hasattr(classifier, "h_")
