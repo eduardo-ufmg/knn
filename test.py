@@ -12,7 +12,7 @@ from sklearn_knn_parameterless_wrapper import SklearnKNNParameterlessWrapper
 
 
 def run_single_experiment(
-    classifier, X_train, X_test, y_train, y_test, n_classes, experiment_name
+    classifier, X_train, X_test, y_train, y_test, n_classes, experiment_name, cm=False
 ):
     """
     Trains, evaluates, and visualizes a single classifier instance.
@@ -22,6 +22,7 @@ def run_single_experiment(
         X_train, X_test, y_train, y_test: The training and testing data.
         n_classes (int): The number of classes in the dataset.
         experiment_name (str): The name of the experiment for titles and logs.
+        cm (bool): Whether to display the confusion matrix. Defaults to False.
     """
     print("\n" + "=" * 60)
     print(f"Running Experiment: {experiment_name}")
@@ -87,22 +88,23 @@ def run_single_experiment(
     print(report)
 
     # --- 3. Visualization ---
-    print("Generating confusion matrix...")
-    cm = confusion_matrix(y_test, y_pred)
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(
-        cm,
-        annot=True,
-        fmt="d",
-        cmap="Blues",
-        xticklabels=[f"Class {i}" for i in range(n_classes)],
-        yticklabels=[f"Class {i}" for i in range(n_classes)],
-    )
-    plt.title(f"Confusion Matrix for {experiment_name}")
-    plt.ylabel("Actual Class")
-    plt.xlabel("Predicted Class")
-    plt.tight_layout()
-    plt.show()
+    if cm:
+        print("Generating confusion matrix...")
+        cm = confusion_matrix(y_test, y_pred)
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(
+            cm,
+            annot=True,
+            fmt="d",
+            cmap="Blues",
+            xticklabels=[f"Class {i}" for i in range(n_classes)],
+            yticklabels=[f"Class {i}" for i in range(n_classes)],
+        )
+        plt.title(f"Confusion Matrix for {experiment_name}")
+        plt.ylabel("Actual Class")
+        plt.xlabel("Predicted Class")
+        plt.tight_layout()
+        plt.show()
 
 
 def run_all_tests():
