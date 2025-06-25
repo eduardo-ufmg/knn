@@ -82,9 +82,11 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
         # --- Bayesian Optimization ---
 
         # 1. Define the search space for h and k
+        h_min, h_max = 1e-2, 1e1
+        k_min, k_max = 1, max(1, n_ref_samples // 2)
         space = [
-            Real(low=1e-2, high=1e1, name="h"),
-            Integer(low=1, high=max(1, n_ref_samples // 2), name="k"),
+            Real(low=h_min, high=h_max, name="h"),
+            Integer(low=k_min, high=k_max, name="k"),
         ]
 
         # 2. Define the objective function to be minimized
@@ -95,9 +97,10 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
             )
             Q = similarity_space(kernel_matrix, self.y_ref_, classes=self.classes_)
 
-            # Here we scale the factors
+            factor_h = (params["h"] - h_min) / (h_max - h_min)
+            factor_k = (params["k"] - k_min) / (k_max - k_max)
 
-            score = metric_func(Q, self.y_ref_, **params)
+            score = metric_func(Q, self.y_ref_, factor_h=factor_h, factor_k=factor_k)
             # We minimize the negative score because the optimizer finds minima
             return -score
 
