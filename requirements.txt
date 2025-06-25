@@ -9,6 +9,7 @@ pyarrow
 fastparquet
 google-api-python-client
 scikit-optimize
+plotly
 black
 isort
 pre-commit
