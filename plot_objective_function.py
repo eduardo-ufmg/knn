@@ -34,8 +34,8 @@ def plot_objective_function():
         random_state=0,
     )
     # 2. Create a suitable hyperparameter grid for the KNN classifier
-    h_range = np.linspace(0.01, 10.0)
-    k_range = np.arange(5, 55, 5)
+    h_range = np.linspace(0.01, 10.0, 10)
+    k_range = np.arange(5, 55, 10)
     dissimilarity_scores = np.zeros((len(h_range), len(k_range)))
     silhouette_scores = np.zeros((len(h_range), len(k_range)))
     spread_scores = np.zeros((len(h_range), len(k_range)))
@@ -60,10 +60,7 @@ def plot_objective_function():
             factor_h = (h - h_range.min()) / (h_range.max() - h_range.min())
             factor_k = (k - k_range.min()) / (k_range.max() - k_range.min())
 
-            scale_epsilon = h_range.min()
-
-            factor_h = factor_h + scale_epsilon
-            factor_k = factor_k + scale_epsilon
+            print(f"Scaled factors: factor_h={factor_h:.2f}, factor_k={factor_k:.2f}")
 
             # 5. Compute each objective function over the similarity space
             dissimilarity_scores[i, j] = dissimilarity(Q, y, factor_h, factor_k)

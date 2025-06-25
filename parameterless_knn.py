@@ -94,6 +94,9 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
                 self.X_ref_, self.X_ref_, **params
             )
             Q = similarity_space(kernel_matrix, self.y_ref_, classes=self.classes_)
+
+            # Here we scale the factors
+
             score = metric_func(Q, self.y_ref_, **params)
             # We minimize the negative score because the optimizer finds minima
             return -score
