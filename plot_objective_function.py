@@ -34,7 +34,7 @@ def plot_objective_function():
         random_state=0,
     )
     # 2. Create a suitable hyperparameter grid for the KNN classifier
-    h_range = np.linspace(0.1, 2.0, 10)
+    h_range = np.linspace(0.01, 10.0)
     k_range = np.arange(5, 55, 5)
     dissimilarity_scores = np.zeros((len(h_range), len(k_range)))
     silhouette_scores = np.zeros((len(h_range), len(k_range)))
@@ -57,10 +57,18 @@ def plot_objective_function():
             model.predict_proba(X)
             Q = model.Q_
 
+            factor_h = (h - h_range.min()) / (h_range.max() - h_range.min())
+            factor_k = (k - k_range.min()) / (k_range.max() - k_range.min())
+
+            scale_epsilon = h_range.min()
+
+            factor_h = factor_h + scale_epsilon
+            factor_k = factor_k + scale_epsilon
+
             # 5. Compute each objective function over the similarity space
-            dissimilarity_scores[i, j] = dissimilarity(Q, y, h, k)
-            silhouette_scores[i, j] = silhouette(Q, y, h, k)
-            spread_scores[i, j] = spread(Q, y, h, k)
+            dissimilarity_scores[i, j] = dissimilarity(Q, y, factor_h, factor_k)
+            silhouette_scores[i, j] = silhouette(Q, y, factor_h, factor_k)
+            spread_scores[i, j] = spread(Q, y, factor_h, factor_k)
 
     # 6. Plot each objective function as an independent interactive plot
     def create_surface_plot(scores, title):
