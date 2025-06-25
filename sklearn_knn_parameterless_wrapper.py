@@ -91,9 +91,9 @@ class SklearnKNNParameterlessWrapper(BaseEstimator, ClassifierMixin):
 
         # Store the best parameters found
         self.best_params_ = {
-            "n_neighbors": res.x[0],
-            "weights": res.x[1],
-            "metric": res.x[2],
+            "n_neighbors": int(res.x[0]),
+            "weights": str(res.x[1]),
+            "metric": str(res.x[2]),
         }
 
         # Fit the final model on the entire dataset with the best parameters
