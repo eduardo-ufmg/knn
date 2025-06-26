@@ -1,0 +1,62 @@
+[
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_dissimilarity_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_dissimilarity",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.0,
+        "p_value": 0.001953125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_dissimilarity' (p=0.0020 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_silhouette_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_silhouette",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 1.0,
+        "p_value": 0.00390625,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_silhouette' (p=0.0039 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_spread_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_spread",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.5,
+        "p_value": 0.00390625,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_spread' (p=0.0039 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_inter_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_inter",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.0,
+        "p_value": 0.001953125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_convex_hull_inter' (p=0.0020 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_intra_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_intra",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.0,
+        "p_value": 0.001953125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_convex_hull_intra' (p=0.0020 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_opposite_hyperplane_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_opposite_hyperplane",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 10.5,
+        "p_value": 0.0859375,
+        "conclusion": "The models are statistically equivalent (p=0.0859 > 0.05)."
+    }
+]

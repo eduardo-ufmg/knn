@@ -1,0 +1,62 @@
+[
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_dissimilarity_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_dissimilarity",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 14.0,
+        "p_value": 0.25,
+        "conclusion": "The models are statistically equivalent (p=0.2500 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_silhouette_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_silhouette",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 22.5,
+        "p_value": 0.75,
+        "conclusion": "The models are statistically equivalent (p=0.7500 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_spread_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_spread",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 22.5,
+        "p_value": 0.75,
+        "conclusion": "The models are statistically equivalent (p=0.7500 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_inter_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_inter",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 10.0,
+        "p_value": 0.0625,
+        "conclusion": "The models are statistically equivalent (p=0.0625 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_intra_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_intra",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 18.0,
+        "p_value": 0.5,
+        "conclusion": "The models are statistically equivalent (p=0.5000 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_opposite_hyperplane_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_opposite_hyperplane",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 22.5,
+        "p_value": 0.75,
+        "conclusion": "The models are statistically equivalent (p=0.7500 > 0.05)."
+    }
+]
