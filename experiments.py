@@ -7,8 +7,11 @@ import numpy as np
 import pandas as pd
 from scipy.stats import wilcoxon
 from sklearn.base import BaseEstimator
+from sklearn.decomposition import PCA
+from sklearn.feature_selection import VarianceThreshold
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import StratifiedKFold
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 # Import the parameter-less classifiers
@@ -143,10 +146,16 @@ def run_single_experiment(dataset_path: Path):
             X_train, X_test = X[train_index], X[test_index]
             y_train, y_test = y[train_index], y[test_index]
 
-            # Pre-process data: Fit on train set, transform both
-            scaler = StandardScaler()
-            X_train_scaled = scaler.fit_transform(X_train)
-            X_test_scaled = scaler.transform(X_test)
+            # Pre-process data: Fit on train set, transform both using a pipeline
+            preprocess_pipeline = Pipeline(
+                [
+                    ("scaler", StandardScaler()),
+                    ("variance_threshold", VarianceThreshold(threshold=0.1)),
+                    ("pca", PCA(n_components=0.9)),
+                ]
+            )
+            X_train_scaled = preprocess_pipeline.fit_transform(X_train)
+            X_test_scaled = preprocess_pipeline.transform(X_test)
 
             # --- Train ---
             start_time = time.perf_counter()
