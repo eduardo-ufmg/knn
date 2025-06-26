@@ -28,3 +28,6 @@
 [submodule "convex_hull_intra"]
 	path = convex_hull_intra
 	url = https://github.com/eduardo-ufmg/convex_hull_intra.git
+[submodule "CorrelationFilter"]
+	path = CorrelationFilter
+	url = https://github.com/eduardo-ufmg/CorrelationFilter.git
