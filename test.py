@@ -149,6 +149,15 @@ def run_all_tests():
         "Parameterless KNN (spread)": ParameterlessKNNClassifier(
             metric="spread", n_optimizer_calls=25
         ),
+        "Parameterless KNN (convex hull inter)": ParameterlessKNNClassifier(
+            metric="convex_hull_inter", n_optimizer_calls=25
+        ),
+        "Parameterless KNN (convex hull intra)": ParameterlessKNNClassifier(
+            metric="convex_hull_intra", n_optimizer_calls=25
+        ),
+        "Parameterless KNN (opposite hyperplane)": ParameterlessKNNClassifier(
+            metric="opposite_hyperplane", n_optimizer_calls=25
+        ),
         "Scikit-learn KNN Wrapper": SklearnKNNParameterlessWrapper(
             n_optimizer_calls=25
         ),
