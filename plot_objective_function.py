@@ -2,8 +2,11 @@ import numpy as np
 import plotly.graph_objects as go
 from sklearn.datasets import make_classification
 
+from convex_hull_inter.convex_hull_inter import convex_hull_inter
+from convex_hull_intra.convex_hull_intra import convex_hull_intra
 from dissimilarity_score.dissimilarity import dissimilarity
 from knn import KNNClassifier
+from opposite_hyperplane.opposite_hyperplane import opposite_hyperplane
 from silhouette_score.silhouette import silhouette
 from spread_score.spread import spread
 
@@ -18,20 +21,22 @@ def plot_objective_function():
     - Dissimilarity Score
     - Silhouette Score
     - Spread Score
+    - Convex Hull Inter (Intersection of Convex Hulls)
+    - Convex Hull Intra (Average n-volume of Convex Hulls)
+    - Opposite Hyperplane (Cosine similarity of hyperplane normals)
 
     The hyperparameters tuned are:
     - h: The bandwidth parameter of the RBF kernel.
     - k: The number of nearest neighbors for the sparse RBF kernel.
     """
     # 1. Create random synthetic classification data
+    n_features = np.random.randint(2, 50)
     X, y = make_classification(
-        n_samples=500,
-        n_features=10,
-        n_informative=5,
+        n_samples=np.random.randint(100, 2000),
+        n_features=n_features,
+        n_informative=np.random.randint(1, n_features),
         n_redundant=0,
-        n_classes=4,
-        n_clusters_per_class=1,
-        random_state=0,
+        n_classes=np.random.randint(2, 10),
     )
     # 2. Create a suitable hyperparameter grid for the KNN classifier
     h_range = np.linspace(0.01, 10.0, 10)
@@ -39,6 +44,9 @@ def plot_objective_function():
     dissimilarity_scores = np.zeros((len(h_range), len(k_range)))
     silhouette_scores = np.zeros((len(h_range), len(k_range)))
     spread_scores = np.zeros((len(h_range), len(k_range)))
+    convex_hull_inter_scores = np.zeros((len(h_range), len(k_range)))
+    convex_hull_intra_scores = np.zeros((len(h_range), len(k_range)))
+    opposite_hyperplane_scores = np.zeros((len(h_range), len(k_range)))
 
     # 3. Iterate over the hyperparameter grid
     for i, h in enumerate(h_range):
@@ -68,6 +76,11 @@ def plot_objective_function():
             dissimilarity_scores[i, j] = dissimilarity(Q, y, factor_h, factor_k)
             silhouette_scores[i, j] = silhouette(Q, y, factor_h, factor_k)
             spread_scores[i, j] = spread(Q, y, factor_h, factor_k)
+            convex_hull_inter_scores[i, j] = convex_hull_inter(Q, y, factor_h, factor_k)
+            convex_hull_intra_scores[i, j] = convex_hull_intra(Q, y, factor_h, factor_k)
+            opposite_hyperplane_scores[i, j] = opposite_hyperplane(
+                Q, y, factor_h, factor_k
+            )
 
     # 6. Plot each objective function as an independent interactive plot
     def create_surface_plot(scores, title):
@@ -89,6 +102,15 @@ def plot_objective_function():
     create_surface_plot(dissimilarity_scores, "Dissimilarity Score vs. Hyperparameters")
     create_surface_plot(silhouette_scores, "Silhouette Score vs. Hyperparameters")
     create_surface_plot(spread_scores, "Spread Score vs. Hyperparameters")
+    create_surface_plot(
+        convex_hull_inter_scores, "Convex Hull Inter vs. Hyperparameters"
+    )
+    create_surface_plot(
+        convex_hull_intra_scores, "Convex Hull Intra vs. Hyperparameters"
+    )
+    create_surface_plot(
+        opposite_hyperplane_scores, "Opposite Hyperplane vs. Hyperparameters"
+    )
 
 
 if __name__ == "__main__":

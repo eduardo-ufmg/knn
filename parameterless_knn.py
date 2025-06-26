@@ -10,7 +10,10 @@ from skopt import gp_minimize
 from skopt.space import Integer, Real
 from skopt.utils import use_named_args
 
+from convex_hull_inter.convex_hull_inter import convex_hull_inter
+from convex_hull_intra.convex_hull_intra import convex_hull_intra
 from dissimilarity_score.dissimilarity import dissimilarity
+from opposite_hyperplane.opposite_hyperplane import opposite_hyperplane
 from silhouette_score.silhouette import silhouette
 from similarity_space.similarity_space import similarity_space
 from sparse_rbf.sparse_multivariate_rbf_kernel import sparse_multivarite_rbf_kernel
@@ -25,7 +28,7 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
 
     Parameters:
     metric : str, default='dissimilarity'
-        The metric to optimize. Options: "dissimilarity", "silhouette", "spread".
+        The metric to optimize. Options: "dissimilarity", "silhouette", "spread", "convex_hull_inter", "convex_hull_intra", "opposite_hyperplane".
 
     n_optimizer_calls : int, default=25
         The number of evaluations for the Bayesian optimizer. More calls can lead
@@ -41,10 +44,18 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
     """
 
     def __init__(self, metric: str = "dissimilarity", n_optimizer_calls: int = 25):
-        if metric not in ["dissimilarity", "silhouette", "spread"]:
+        if metric not in [
+            "dissimilarity",
+            "silhouette",
+            "spread",
+            "convex_hull_inter",
+            "convex_hull_intra",
+            "opposite_hyperplane",
+        ]:
             raise ValueError(
                 f"Invalid metric '{metric}'. Choose from 'dissimilarity', "
-                "'silhouette', or 'spread'."
+                "'silhouette', 'spread', 'convex_hull_inter', "
+                "'convex_hull_intra', 'opposite_hyperplane'."
             )
         self.metric = metric
         self.n_optimizer_calls = n_optimizer_calls
@@ -61,6 +72,9 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
             "dissimilarity": dissimilarity,
             "silhouette": silhouette,
             "spread": spread,
+            "convex_hull_inter": convex_hull_inter,
+            "convex_hull_intra": convex_hull_intra,
+            "opposite_hyperplane": opposite_hyperplane,
         }
         metric_func = metric_functions[self.metric_]
 
