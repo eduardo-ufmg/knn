@@ -14,7 +14,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-# Import the parameter-less classifiers
+from CorrelationFilter.CorrelationFilter import CorrelationFilter
 from parameterless_knn import ParameterlessKNNClassifier
 from sklearn_knn_parameterless_wrapper import SklearnKNNParameterlessWrapper
 
@@ -151,6 +151,7 @@ def run_single_experiment(dataset_path: Path):
                 [
                     ("scaler", StandardScaler()),
                     ("variance_threshold", VarianceThreshold(threshold=0.1)),
+                    ("correlation_filter", CorrelationFilter()),
                     ("pca", PCA(n_components=0.9)),
                 ]
             )
