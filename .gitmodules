@@ -25,3 +25,6 @@
 [submodule "convex_hull_inter"]
 	path = convex_hull_inter
 	url = https://github.com/eduardo-ufmg/convex_hull_inter.git
+[submodule "convex_hull_intra"]
+	path = convex_hull_intra
+	url = https://github.com/eduardo-ufmg/convex_hull_intra.git
