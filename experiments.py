@@ -106,6 +106,24 @@ def run_single_experiment(dataset_path: Path):
             ),
         ),
         (
+            "parameterless_knn_convex_hull_inter",
+            ParameterlessKNNClassifier(
+                metric="convex_hull_inter", n_optimizer_calls=N_OPTIMIZER_CALLS
+            ),
+        ),
+        (
+            "parameterless_knn_convex_hull_intra",
+            ParameterlessKNNClassifier(
+                metric="convex_hull_intra", n_optimizer_calls=N_OPTIMIZER_CALLS
+            ),
+        ),
+        (
+            "parameterless_knn_opposite_hyperplane",
+            ParameterlessKNNClassifier(
+                metric="opposite_hyperplane", n_optimizer_calls=N_OPTIMIZER_CALLS
+            ),
+        ),
+        (
             "sklearn_knn_wrapper",
             SklearnKNNParameterlessWrapper(n_optimizer_calls=N_OPTIMIZER_CALLS),
         ),
