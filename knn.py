@@ -69,15 +69,13 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         If `use_support_samples` is True, this method will identify support
         samples from the training data to use as references for prediction.
 
-        Parameters
-        ----------
+        Parameters:
         X : array-like of shape (n_samples, n_features)
             The training input samples.
         y : array-like of shape (n_samples,)
             The target class labels.
 
-        Returns
-        -------
+        Returns:
         self : object
             Returns the instance itself.
         """
@@ -108,13 +106,11 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         The probability of a sample belonging to a class is calculated as its
         normalized similarity to that class.
 
-        Parameters
-        ----------
+        Parameters:
         X : array-like of shape (n_samples, n_features)
             The test samples.
 
-        Returns
-        -------
+        Returns:
         p : ndarray of shape (n_samples, n_classes)
             The class probabilities of the input samples. Classes are ordered
             lexicographically as in `self.classes_`.
@@ -146,13 +142,11 @@ class KNNClassifier(BaseEstimator, ClassifierMixin):
         """
         Predict the class labels for the provided data.
 
-        Parameters
-        ----------
+        Parameters:
         X : array-like of shape (n_samples, n_features)
             The test samples.
 
-        Returns
-        -------
+        Returns:
         y_pred : ndarray of shape (n_samples,)
             Class labels for each data sample.
         """

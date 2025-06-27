@@ -9,7 +9,7 @@ def load_and_process_data(filepath="results/test_results.json"):
     """
     Loads test results from a JSON file and processes them into a pandas DataFrame.
 
-    Args:
+    Parameters:
         filepath (str): The path to the JSON file.
 
     Returns:
@@ -61,7 +61,7 @@ def style_summary_table(df):
     """
     Applies styling to the summary DataFrame to highlight the best values.
 
-    Args:
+    Parameters:
         df (pd.DataFrame): The DataFrame to style.
 
     Returns:
@@ -127,7 +127,7 @@ def create_visualizations(df):
     """
     Creates and displays bar plots for each performance metric.
 
-    Args:
+    Parameters:
         df (pd.DataFrame): The DataFrame containing model performance data.
     """
     sns.set_style("whitegrid")
