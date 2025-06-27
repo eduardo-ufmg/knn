@@ -4,9 +4,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from sklearn.datasets import make_classification
+from sklearn.decomposition import PCA
+from sklearn.feature_selection import VarianceThreshold
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
+from CorrelationFilter.CorrelationFilter import CorrelationFilter
 from parameterless_knn import ParameterlessKNNClassifier
 from sklearn_knn_parameterless_wrapper import SklearnKNNParameterlessWrapper
 
@@ -36,6 +41,18 @@ def run_single_experiment(
     elif isinstance(classifier, SklearnKNNParameterlessWrapper):
         print("-> Optimization Metric: '10-fold CV Accuracy'")
         print(f"-> Optimizer calls: {classifier.n_optimizer_calls}")
+
+    preprocess_pipeline = Pipeline(
+        steps=[
+            ("scaler", StandardScaler()),
+            ("variance_threshold", VarianceThreshold(0.1)),
+            ("corelation_filter", CorrelationFilter(0.9)),
+            ("pca", PCA(n_components=0.9)),
+        ]
+    )
+
+    X_train = preprocess_pipeline.fit_transform(X_train)
+    X_test = preprocess_pipeline.transform(X_test)
 
     start_time = time.time()
     classifier.fit(X_train, y_train)
