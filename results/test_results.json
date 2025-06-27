@@ -1,0 +1,133 @@
+{
+    "Parameterless KNN (dissimilarity, hnbf)": {
+        "training_time": 5.340324878692627,
+        "prediction_time": 0.06638503074645996,
+        "overall_accuracy": 0.6614699331848553,
+        "optimal_parameters": {
+            "h": 8.765401139026874,
+            "k": 112
+        },
+        "reference_samples_used": 457
+    },
+    "Parameterless KNN (dissimilarity, margin_clustering)": {
+        "training_time": 6.732213973999023,
+        "prediction_time": 0.10068583488464355,
+        "overall_accuracy": 0.7438752783964365,
+        "optimal_parameters": {
+            "h": 8.41861012613275,
+            "k": 98
+        },
+        "reference_samples_used": 616
+    },
+    "Parameterless KNN (silhouette, hnbf)": {
+        "training_time": 5.334895133972168,
+        "prediction_time": 0.09803080558776855,
+        "overall_accuracy": 0.688195991091314,
+        "optimal_parameters": {
+            "h": 1.0478226283602194,
+            "k": 1
+        },
+        "reference_samples_used": 457
+    },
+    "Parameterless KNN (silhouette, margin_clustering)": {
+        "training_time": 5.326699733734131,
+        "prediction_time": 0.0979759693145752,
+        "overall_accuracy": 0.5857461024498887,
+        "optimal_parameters": {
+            "h": 2.9790151006288608,
+            "k": 1
+        },
+        "reference_samples_used": 616
+    },
+    "Parameterless KNN (spread, hnbf)": {
+        "training_time": 6.457130432128906,
+        "prediction_time": 0.10764789581298828,
+        "overall_accuracy": 0.6391982182628062,
+        "optimal_parameters": {
+            "h": 9.747696442340963,
+            "k": 120
+        },
+        "reference_samples_used": 457
+    },
+    "Parameterless KNN (spread, margin_clustering)": {
+        "training_time": 8.045055866241455,
+        "prediction_time": 0.10052490234375,
+        "overall_accuracy": 0.7193763919821826,
+        "optimal_parameters": {
+            "h": 9.438716472155777,
+            "k": 139
+        },
+        "reference_samples_used": 616
+    },
+    "Parameterless KNN (convex_hull_inter, hnbf)": {
+        "training_time": 2.4178977012634277,
+        "prediction_time": 0.01438593864440918,
+        "overall_accuracy": 0.5857461024498887,
+        "optimal_parameters": {
+            "h": 5.932517736067934,
+            "k": 193
+        },
+        "reference_samples_used": 457
+    },
+    "Parameterless KNN (convex_hull_inter, margin_clustering)": {
+        "training_time": 5.612276554107666,
+        "prediction_time": 0.1070706844329834,
+        "overall_accuracy": 0.6080178173719376,
+        "optimal_parameters": {
+            "h": 8.64854882557589,
+            "k": 290
+        },
+        "reference_samples_used": 616
+    },
+    "Parameterless KNN (convex_hull_intra, hnbf)": {
+        "training_time": 6.7159318923950195,
+        "prediction_time": 0.10237383842468262,
+        "overall_accuracy": 0.5946547884187082,
+        "optimal_parameters": {
+            "h": 9.075645036224524,
+            "k": 179
+        },
+        "reference_samples_used": 457
+    },
+    "Parameterless KNN (convex_hull_intra, margin_clustering)": {
+        "training_time": 6.192481517791748,
+        "prediction_time": 0.10561394691467285,
+        "overall_accuracy": 0.6547884187082406,
+        "optimal_parameters": {
+            "h": 8.77362002449884,
+            "k": 235
+        },
+        "reference_samples_used": 616
+    },
+    "Parameterless KNN (opposite_hyperplane, hnbf)": {
+        "training_time": 4.6551032066345215,
+        "prediction_time": 0.08186554908752441,
+        "overall_accuracy": 0.6703786191536748,
+        "optimal_parameters": {
+            "h": 3.2436077029155426,
+            "k": 143
+        },
+        "reference_samples_used": 457
+    },
+    "Parameterless KNN (opposite_hyperplane, margin_clustering)": {
+        "training_time": 5.007799386978149,
+        "prediction_time": 0.07595634460449219,
+        "overall_accuracy": 0.7193763919821826,
+        "optimal_parameters": {
+            "h": 3.3846764838298076,
+            "k": 198
+        },
+        "reference_samples_used": 616
+    },
+    "Scikit-learn KNN Wrapper": {
+        "training_time": 7.790935039520264,
+        "prediction_time": 0.10943222045898438,
+        "overall_accuracy": 0.7973273942093542,
+        "optimal_parameters": {
+            "n_neighbors": 64,
+            "weights": "distance",
+            "metric": "euclidean"
+        },
+        "reference_samples_used": null
+    }
+}

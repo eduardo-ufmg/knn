@@ -1,3 +1,5 @@
+import json
+import os
 import time
 
 import matplotlib.pyplot as plt
@@ -6,7 +8,7 @@ import seaborn as sns
 from sklearn.datasets import make_classification
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import VarianceThreshold
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -20,7 +22,7 @@ def run_single_experiment(
     classifier, X_train, X_test, y_train, y_test, n_classes, experiment_name, cm=False
 ):
     """
-    Trains, evaluates, and visualizes a single classifier instance.
+    Trains and evaluates a single classifier, returning its performance metrics.
 
     Parameters:
         classifier: An unfitted classifier instance.
@@ -28,20 +30,15 @@ def run_single_experiment(
         n_classes (int): The number of classes in the dataset.
         experiment_name (str): The name of the experiment for titles and logs.
         cm (bool): Whether to display the confusion matrix. Defaults to False.
+
+    Returns:
+        dict: A dictionary containing the performance metrics for the model.
     """
     print("\n" + "=" * 60)
     print(f"Running Experiment: {experiment_name}")
     print("=" * 60)
 
-    # --- 1. Model Training ---
-    print(f"Training classifier: {classifier.__class__.__name__}")
-    if isinstance(classifier, ParameterlessKNNClassifier):
-        print(f"-> Optimization Metric: '{classifier.metric}'")
-        print(f"-> Optimizer calls: {classifier.n_optimizer_calls}")
-    elif isinstance(classifier, SklearnKNNParameterlessWrapper):
-        print("-> Optimization Metric: '10-fold CV Accuracy'")
-        print(f"-> Optimizer calls: {classifier.n_optimizer_calls}")
-
+    # --- 1. Data Preprocessing ---
     preprocess_pipeline = Pipeline(
         steps=[
             ("scaler", StandardScaler()),
@@ -50,67 +47,74 @@ def run_single_experiment(
             ("pca", PCA(n_components=0.9)),
         ]
     )
-
     X_train = preprocess_pipeline.fit_transform(X_train)
     X_test = preprocess_pipeline.transform(X_test)
 
+    # --- 2. Model Training ---
+    print(f"Training classifier: {classifier.__class__.__name__}")
     start_time = time.time()
     classifier.fit(X_train, y_train)
     end_time = time.time()
-    print(f"\nTraining completed in {end_time - start_time:.4f} seconds.")
+    training_time = end_time - start_time
+    print(f"Training completed in {training_time:.4f} seconds.")
 
-    # Display best parameters for optimizer-based classifiers
+    # --- 3. Prediction ---
+    print("\nMaking predictions on the test set...")
+    start_time = time.time()
+    y_pred = classifier.predict(X_test)
+    end_time = time.time()
+    prediction_time = end_time - start_time
+    print(f"Prediction completed in {prediction_time:.4f} seconds.")
+
+    # --- 4. Evaluation & Data Collection ---
+    print("\n--- Classifier Performance ---")
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"Overall Accuracy: {accuracy:.4f}")
+
+    # Initialize results dictionary
+    results = {
+        "training_time": training_time,
+        "prediction_time": prediction_time,
+        "overall_accuracy": accuracy,
+        "optimal_parameters": None,
+        "reference_samples_used": None,
+    }
+
+    # Store optimal parameters
     if isinstance(classifier, SklearnKNNParameterlessWrapper) and hasattr(
         classifier, "best_params_"
     ):
-        best_params_str = ", ".join(
-            f"{k}={v}" for k, v in classifier.best_params_.items()
-        )
-        print(f"Best Scikit-learn KNN params found: {best_params_str}")
+        results["optimal_parameters"] = classifier.best_params_
+        print(f"Best Scikit-learn KNN params found: {classifier.best_params_}")
     elif (
         isinstance(classifier, ParameterlessKNNClassifier)
         and hasattr(classifier, "h_")
         and hasattr(classifier, "k_")
     ):
+        results["optimal_parameters"] = {
+            "h": float(classifier.h_),
+            "k": int(classifier.k_),
+        }
         print(f"Best custom KNN params found: h={classifier.h_:.4f}, k={classifier.k_}")
 
+    # Store reference samples count
     if isinstance(classifier, ParameterlessKNNClassifier) and hasattr(
         classifier, "X_ref_"
     ):
         num_ref_samples = classifier.X_ref_.shape[0]
+        results["reference_samples_used"] = int(num_ref_samples)
         print(
             f"Classifier is using {num_ref_samples} reference samples (out of "
             f"{len(X_train)} original training samples)."
         )
 
-    # --- 2. Prediction and Evaluation ---
-    print("\nMaking predictions on the test set...")
-    start_time = time.time()
-    y_pred = classifier.predict(X_test)
-    end_time = time.time()
-    print(f"Prediction completed in {end_time - start_time:.4f} seconds.")
-
-    print("\n--- Classifier Performance ---")
-    accuracy = accuracy_score(y_test, y_pred)
-    print(f"Overall Accuracy: {accuracy:.4f}")
-
-    print("\nClassification Report:")
-    # Added zero_division=0 to prevent warnings if a class has no predicted samples
-    report = classification_report(
-        y_test,
-        y_pred,
-        target_names=[f"Class {i}" for i in range(n_classes)],
-        zero_division=0,
-    )
-    print(report)
-
-    # --- 3. Visualization ---
+    # --- 5. Visualization (Optional) ---
     if cm:
         print("Generating confusion matrix...")
-        cm = confusion_matrix(y_test, y_pred)
+        # ... (visualization code remains the same)
         plt.figure(figsize=(10, 8))
         sns.heatmap(
-            cm,
+            confusion_matrix(y_test, y_pred),
             annot=True,
             fmt="d",
             cmap="Blues",
@@ -123,10 +127,12 @@ def run_single_experiment(
         plt.tight_layout()
         plt.show()
 
+    return results
+
 
 def run_all_tests():
     """
-    Runs a complete test suite for all implemented KNN classifiers.
+    Runs a test suite for KNN classifiers and saves the results to a JSON file.
     """
     # --- 1. Experiment Configuration ---
     print("Configuring the experiment...")
@@ -151,40 +157,51 @@ def run_all_tests():
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.3, random_state=RANDOM_STATE, stratify=y
     )
-    print(f"Training set shape: {X_train.shape}")
-    print(f"Testing set shape: {X_test.shape}")
 
     # --- 3. Define Experiments ---
-    # A dictionary mapping experiment names to classifier instances.
-    classifiers_to_test = {
-        "Parameterless KNN (dissimilarity)": ParameterlessKNNClassifier(
-            metric="dissimilarity", n_optimizer_calls=25
-        ),
-        "Parameterless KNN (silhouette)": ParameterlessKNNClassifier(
-            metric="silhouette", n_optimizer_calls=25
-        ),
-        "Parameterless KNN (spread)": ParameterlessKNNClassifier(
-            metric="spread", n_optimizer_calls=25
-        ),
-        "Parameterless KNN (convex hull inter)": ParameterlessKNNClassifier(
-            metric="convex_hull_inter", n_optimizer_calls=25
-        ),
-        "Parameterless KNN (convex hull intra)": ParameterlessKNNClassifier(
-            metric="convex_hull_intra", n_optimizer_calls=25
-        ),
-        "Parameterless KNN (opposite hyperplane)": ParameterlessKNNClassifier(
-            metric="opposite_hyperplane", n_optimizer_calls=25
-        ),
-        "Scikit-learn KNN Wrapper": SklearnKNNParameterlessWrapper(
-            n_optimizer_calls=25
-        ),
-    }
+    classifiers_to_test = {}
+    optimization_metrics = [
+        "dissimilarity",
+        "silhouette",
+        "spread",
+        "convex_hull_inter",
+        "convex_hull_intra",
+        "opposite_hyperplane",
+    ]
+    support_sample_methods = ["hnbf", "margin_clustering"]
 
-    # --- 4. Run All Experiments ---
+    for metric in optimization_metrics:
+        for method in support_sample_methods:
+            classifiers_to_test[f"Parameterless KNN ({metric}, {method})"] = (
+                ParameterlessKNNClassifier(
+                    metric=metric, support_samples_method=method, n_optimizer_calls=25
+                )
+            )
+    classifiers_to_test["Scikit-learn KNN Wrapper"] = SklearnKNNParameterlessWrapper(
+        n_optimizer_calls=25
+    )
+
+    # --- 4. Run All Experiments & Collect Results ---
+    all_results = {}
     for name, classifier in classifiers_to_test.items():
-        run_single_experiment(
+        results = run_single_experiment(
             classifier, X_train, X_test, y_train, y_test, N_CLASSES, name
         )
+        all_results[name] = results
+
+    # --- 5. Save Results to JSON file ---
+    output_dir = "results"
+    os.makedirs(output_dir, exist_ok=True)  # Create directory if it doesn't exist
+    output_path = os.path.join(output_dir, "test_results.json")
+
+    print("\n" + "=" * 60)
+    print(f"Saving all test results to {output_path}")
+    print("=" * 60)
+
+    with open(output_path, "w") as f:
+        json.dump(all_results, f, indent=4)
+
+    print("Successfully saved results.")
 
 
 if __name__ == "__main__":

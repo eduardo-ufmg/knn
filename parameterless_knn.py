@@ -30,6 +30,9 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
     metric : str, default='dissimilarity'
         The metric to optimize. Options: "dissimilarity", "silhouette", "spread", "convex_hull_inter", "convex_hull_intra", "opposite_hyperplane".
 
+    support_samples_method : str, default='hnbf'
+        The method to find support samples. Options: 'hnbf', 'margin_clustering', 'gabriel_graph'.
+
     n_optimizer_calls : int, default=25
         The number of evaluations for the Bayesian optimizer. More calls can lead
         to better parameters but increase fitting time.
@@ -43,7 +46,12 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
     ...
     """
 
-    def __init__(self, metric: str = "dissimilarity", n_optimizer_calls: int = 25):
+    def __init__(
+        self,
+        metric: str = "dissimilarity",
+        support_samples_method: str = "hnbf",
+        n_optimizer_calls: int = 25,
+    ):
         if metric not in [
             "dissimilarity",
             "silhouette",
@@ -57,7 +65,18 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
                 "'silhouette', 'spread', 'convex_hull_inter', "
                 "'convex_hull_intra', 'opposite_hyperplane'."
             )
+
+        if support_samples_method not in ["hnbf", "margin_clustering", "gabriel_graph"]:
+            raise ValueError(
+                f"Invalid support_samples_method '{support_samples_method}'. "
+                "Choose from 'hnbf', 'margin_clustering', 'gabriel_graph'."
+            )
+
+        if n_optimizer_calls <= 0:
+            raise ValueError("n_optimizer_calls must be a positive integer.")
+
         self.metric = metric
+        self.support_samples_method = support_samples_method
         self.n_optimizer_calls = n_optimizer_calls
 
     def fit(self, X, y):
@@ -78,7 +97,7 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
         }
         metric_func = metric_functions[self.metric_]
 
-        X_ref, y_ref = support_samples(X, y)
+        X_ref, y_ref = support_samples(X, y, method=self.support_samples_method)
         if X_ref.shape[0] < 2:
             self.X_ref_, self.y_ref_ = X, y
         else:
