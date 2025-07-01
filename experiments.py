@@ -85,52 +85,40 @@ def run_single_experiment(dataset_path: Path):
 
     # --- Experiment Configuration ---
     N_SPLITS = 10
-    N_OPTIMIZER_CALLS = 25  # Number of calls for Bayesian Optimization
+    N_OPTIMIZER_CALLS = 10  # Number of calls for Bayesian Optimization
 
     # --- 2. Define Models for Evaluation ---
-    # A list of tuples, each containing a unique name and an unfitted model instance.
-    models_to_evaluate: list[tuple[str, Any]] = [
-        (
-            "parameterless_knn_dissimilarity",
-            ParameterlessKNNClassifier(
-                metric="dissimilarity", n_optimizer_calls=N_OPTIMIZER_CALLS
-            ),
-        ),
-        (
-            "parameterless_knn_silhouette",
-            ParameterlessKNNClassifier(
-                metric="silhouette", n_optimizer_calls=N_OPTIMIZER_CALLS
-            ),
-        ),
-        (
-            "parameterless_knn_spread",
-            ParameterlessKNNClassifier(
-                metric="spread", n_optimizer_calls=N_OPTIMIZER_CALLS
-            ),
-        ),
-        (
-            "parameterless_knn_convex_hull_inter",
-            ParameterlessKNNClassifier(
-                metric="convex_hull_inter", n_optimizer_calls=N_OPTIMIZER_CALLS
-            ),
-        ),
-        (
-            "parameterless_knn_convex_hull_intra",
-            ParameterlessKNNClassifier(
-                metric="convex_hull_intra", n_optimizer_calls=N_OPTIMIZER_CALLS
-            ),
-        ),
-        (
-            "parameterless_knn_opposite_hyperplane",
-            ParameterlessKNNClassifier(
-                metric="opposite_hyperplane", n_optimizer_calls=N_OPTIMIZER_CALLS
-            ),
-        ),
+    models_to_evaluate: list[tuple[str, Any]] = []
+
+    # Define all options for metrics and support sample methods
+    metrics = [
+        "dissimilarity",
+        "silhouette",
+        "spread",
+        "convex_hull_inter",
+        "convex_hull_intra",
+        "opposite_hyperplane",
+    ]
+    support_samples_methods = ["hnbf", "margin_clustering", "gabriel_graph"]
+
+    # Generate a model for each combination of metric and support sample method
+    for metric in metrics:
+        for ss_method in support_samples_methods:
+            model_name = f"parameterless_knn_{metric}_{ss_method}"
+            model_instance = ParameterlessKNNClassifier(
+                metric=metric,
+                support_samples_method=ss_method,
+                n_optimizer_calls=N_OPTIMIZER_CALLS,
+            )
+            models_to_evaluate.append((model_name, model_instance))
+
+    # Add the scikit-learn wrapper as a baseline for comparison
+    models_to_evaluate.append(
         (
             "sklearn_knn_wrapper",
             SklearnKNNParameterlessWrapper(n_optimizer_calls=N_OPTIMIZER_CALLS),
-        ),
-    ]
+        )
+    )
 
     # --- 3. Run Cross-Validation for Each Model ---
     skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=0)
@@ -151,7 +139,7 @@ def run_single_experiment(dataset_path: Path):
                 [
                     ("scaler", StandardScaler()),
                     ("variance_threshold", VarianceThreshold(threshold=0.1)),
-                    ("correlation_filter", CorrelationFilter()),
+                    ("correlation_filter", CorrelationFilter(threshold=0.9)),
                     ("pca", PCA(n_components=0.9)),
                 ]
             )

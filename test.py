@@ -44,7 +44,7 @@ def run_single_experiment(
             ("scaler", StandardScaler()),
             ("variance_threshold", VarianceThreshold(0.1)),
             ("corelation_filter", CorrelationFilter(0.9)),
-            ("pca", PCA(n_components=0.9)),
+            ("pca", PCA(0.9)),
         ]
     )
     X_train = preprocess_pipeline.fit_transform(X_train)
@@ -168,7 +168,7 @@ def run_all_tests():
         "convex_hull_intra",
         "opposite_hyperplane",
     ]
-    support_sample_methods = ["hnbf", "margin_clustering"]
+    support_sample_methods = ["hnbf", "margin_clustering", "gabriel_graph"]
 
     for metric in optimization_metrics:
         for method in support_sample_methods:

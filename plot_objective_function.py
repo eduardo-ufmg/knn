@@ -67,8 +67,6 @@ def plot_objective_function():
 
             factor_h = (h - h_range.min()) / (h_range.max() - h_range.min())
             factor_k = (k - k_range.min()) / (k_range.max() - k_range.min())
-            factor_h = np.exp(-((factor_h - 0.5) ** 2))
-            factor_k = np.exp(-((factor_k - 0.5) ** 2))
 
             print(f"Scaled factors: factor_h={factor_h:.2f}, factor_k={factor_k:.2f}")
 
