@@ -30,13 +30,13 @@ def plot_objective_function():
     - k: The number of nearest neighbors for the sparse RBF kernel.
     """
     # 1. Create random synthetic classification data
-    n_features = np.random.randint(2, 50)
+    n_features = np.random.randint(2, 10)
     X, y = make_classification(
-        n_samples=np.random.randint(100, 2000),
+        n_samples=np.random.randint(100, 1000),
         n_features=n_features,
         n_informative=np.random.randint(1, n_features),
         n_redundant=0,
-        n_classes=np.random.randint(2, 10),
+        n_classes=np.random.randint(2, 5),
     )
     # 2. Create a suitable hyperparameter grid for the KNN classifier
     h_range = np.linspace(0.01, 10.0, 10)
