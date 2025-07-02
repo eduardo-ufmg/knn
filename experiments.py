@@ -2,6 +2,7 @@ import json
 import time
 from pathlib import Path
 from typing import Any, cast
+from warnings import warn
 
 import numpy as np
 import pandas as pd
@@ -146,16 +147,27 @@ def run_single_experiment(dataset_path: Path):
             X_train_scaled = preprocess_pipeline.fit_transform(X_train)
             X_test_scaled = preprocess_pipeline.transform(X_test)
 
-            # --- Train ---
-            start_time = time.perf_counter()
-            model.fit(X_train_scaled, y_train)
-            fold_metrics["train_times"].append(time.perf_counter() - start_time)
+            try:
+                # --- Train ---
+                start_time = time.perf_counter()
+                model.fit(X_train_scaled, y_train)
+                fold_metrics["train_times"].append(time.perf_counter() - start_time)
 
-            # --- Predict ---
-            start_time = time.perf_counter()
-            y_pred = model.predict(X_test_scaled)
-            fold_metrics["predict_times"].append(time.perf_counter() - start_time)
-            fold_metrics["accuracies"].append(accuracy_score(y_test, y_pred))
+                # --- Predict ---
+                start_time = time.perf_counter()
+                y_pred = model.predict(X_test_scaled)
+                fold_metrics["predict_times"].append(time.perf_counter() - start_time)
+                fold_metrics["accuracies"].append(accuracy_score(y_test, y_pred))
+
+            except Exception as e:
+                warn(
+                    f"  [Warning] Model '{model_name}' failed on fold {fold + 1}: {e}",
+                    stacklevel=2,
+                )
+                fold_metrics["train_times"].append(0.0)
+                fold_metrics["predict_times"].append(0.0)
+                fold_metrics["accuracies"].append(0.0)
+                continue
 
         # --- Aggregate and Save Results for the current model ---
         model_results = {
