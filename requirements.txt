@@ -10,6 +10,8 @@ fastparquet
 google-api-python-client
 scikit-optimize
 plotly
+joblib
+pip-system-certs
 black
 isort
 pre-commit

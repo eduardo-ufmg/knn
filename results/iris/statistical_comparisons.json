@@ -1,0 +1,182 @@
+[
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_dissimilarity_hnbf_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_dissimilarity_hnbf",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.0,
+        "p_value": 0.001953125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_dissimilarity_hnbf' (p=0.0020 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_dissimilarity_margin_clustering_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_dissimilarity_margin_clustering",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 24.0,
+        "p_value": 1.0,
+        "conclusion": "The models are statistically equivalent (p=1.0000 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_dissimilarity_gabriel_graph_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_dissimilarity_gabriel_graph",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 17.0,
+        "p_value": 0.30859375,
+        "conclusion": "The models are statistically equivalent (p=0.3086 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_silhouette_hnbf_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_silhouette_hnbf",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.5,
+        "p_value": 0.00390625,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_silhouette_hnbf' (p=0.0039 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_silhouette_margin_clustering_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_silhouette_margin_clustering",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 3.0,
+        "p_value": 0.015625,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_silhouette_margin_clustering' (p=0.0156 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_silhouette_gabriel_graph_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_silhouette_gabriel_graph",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 5.0,
+        "p_value": 0.03125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_silhouette_gabriel_graph' (p=0.0312 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_spread_hnbf_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_spread_hnbf",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.0,
+        "p_value": 0.001953125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_spread_hnbf' (p=0.0020 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_spread_margin_clustering_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_spread_margin_clustering",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 22.5,
+        "p_value": 0.75,
+        "conclusion": "The models are statistically equivalent (p=0.7500 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_spread_gabriel_graph_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_spread_gabriel_graph",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 27.5,
+        "p_value": 1.0,
+        "conclusion": "The models are statistically equivalent (p=1.0000 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_inter_hnbf_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_inter_hnbf",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.0,
+        "p_value": 0.001953125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_convex_hull_inter_hnbf' (p=0.0020 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_inter_margin_clustering_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_inter_margin_clustering",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 22.5,
+        "p_value": 0.625,
+        "conclusion": "The models are statistically equivalent (p=0.6250 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_inter_gabriel_graph_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_inter_gabriel_graph",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.0,
+        "p_value": 0.001953125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_convex_hull_inter_gabriel_graph' (p=0.0020 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_intra_hnbf_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_intra_hnbf",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.0,
+        "p_value": 0.001953125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_convex_hull_intra_hnbf' (p=0.0020 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_intra_margin_clustering_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_intra_margin_clustering",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 24.5,
+        "p_value": 0.875,
+        "conclusion": "The models are statistically equivalent (p=0.8750 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_convex_hull_intra_gabriel_graph_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_convex_hull_intra_gabriel_graph",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 16.0,
+        "p_value": 0.25,
+        "conclusion": "The models are statistically equivalent (p=0.2500 > 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_opposite_hyperplane_hnbf_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_opposite_hyperplane_hnbf",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 0.0,
+        "p_value": 0.001953125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_opposite_hyperplane_hnbf' (p=0.0020 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_opposite_hyperplane_margin_clustering_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_opposite_hyperplane_margin_clustering",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 5.0,
+        "p_value": 0.03125,
+        "conclusion": "'sklearn_knn_wrapper' is significantly better than 'parameterless_knn_opposite_hyperplane_margin_clustering' (p=0.0312 <= 0.05)."
+    },
+    {
+        "test_name": "Wilcoxon Signed-Rank Test",
+        "comparison": "parameterless_knn_opposite_hyperplane_gabriel_graph_vs_sklearn_knn_wrapper",
+        "model_1": "parameterless_knn_opposite_hyperplane_gabriel_graph",
+        "model_2": "sklearn_knn_wrapper",
+        "alpha": 0.05,
+        "statistic": 24.5,
+        "p_value": 0.9375,
+        "conclusion": "The models are statistically equivalent (p=0.9375 > 0.05)."
+    }
+]
