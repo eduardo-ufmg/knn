@@ -133,7 +133,15 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
             factor_h = (params["h"] - h_min) / (h_max - h_min)
             factor_k = (params["k"] - k_min) / (k_min - k_max)
 
-            score = metric_func(Q, self.y_ref_, factor_h=factor_h, factor_k=factor_k)
+            # Pass self.classes_ to ensure the metric function is aware of all
+            # original classes, even if some are missing from y_ref_.
+            score = metric_func(
+                Q,
+                self.y_ref_,
+                factor_h=factor_h,
+                factor_k=factor_k,
+                classes=self.classes_,
+            )
             # We minimize the negative score because the optimizer finds minima
             return -score
 

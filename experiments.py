@@ -160,10 +160,7 @@ def run_single_experiment(dataset_path: Path):
                 fold_metrics["accuracies"].append(accuracy_score(y_test, y_pred))
 
             except Exception as e:
-                warn(
-                    f"  [Warning] Model '{model_name}' failed on fold {fold + 1}: {e}",
-                    stacklevel=2,
-                )
+                warn(f"  [Warning] Model '{model_name}' failed on fold {fold + 1}: {e}")
                 fold_metrics["train_times"].append(0.0)
                 fold_metrics["predict_times"].append(0.0)
                 fold_metrics["accuracies"].append(0.0)

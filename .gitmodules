@@ -31,3 +31,6 @@
 [submodule "CorrelationFilter"]
 	path = CorrelationFilter
 	url = https://github.com/eduardo-ufmg/CorrelationFilter.git
+[submodule "paramhandling"]
+	path = paramhandling
+	url = https://github.com/eduardo-ufmg/paramhandling.git
