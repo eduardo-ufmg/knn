@@ -1,5 +1,7 @@
 import json
+import os
 import time
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, cast
 from warnings import warn
@@ -35,14 +37,9 @@ def save_result(dataset_name: str, model_name: str, result_data: dict):
         model_name: The name of the model evaluated.
         result_data: A dictionary containing the experiment's results.
     """
-    # Create the directory for the specific dataset if it doesn't exist
     output_dir = RESULTS_DIR / dataset_name
     output_dir.mkdir(parents=True, exist_ok=True)
-
-    # Define the output file path
     output_path = output_dir / f"{model_name}.json"
-
-    # Write the results dictionary to the JSON file
     with open(output_path, "w") as f:
         json.dump(result_data, f, indent=4)
     print(f"    -> Saved {model_name} results to '{output_path}'")
@@ -64,34 +61,109 @@ def save_all_stat_tests(dataset_name: str, all_stats_data: list[dict]):
     print(f"    -> Saved all statistical analyses to '{output_path}'")
 
 
-def run_single_experiment(dataset_path: Path):
+def evaluate_model(
+    model_tuple: tuple[str, Any],
+    X: np.ndarray,
+    y: np.ndarray,
+    dataset_name: str,
+    n_splits: int,
+):
     """
-    Runs a comparative experiment for a single dataset using 10-fold cross-validation.
+    Evaluates a single model using cross-validation.
 
-    This function evaluates multiple parameter-less KNN models. For each model,
-    it performs 10-fold cross-validation to measure performance. After evaluating
-    all models, it performs Wilcoxon signed-rank tests to compare each custom
-    optimization metric against the scikit-learn based wrapper.
+    This function is designed to be a self-contained task that can be run in a separate process.
+
+    Parameters:
+        model_tuple: A tuple containing the model name and the model instance.
+        X: Feature data.
+        y: Target labels.
+        dataset_name: The name of the dataset being processed.
+        n_splits: The number of cross-validation folds.
+
+    Returns:
+        A tuple containing the model name and a dictionary of its results.
+    """
+    model_name, model = model_tuple
+    print(f"\n  Evaluating model: {model_name} on dataset: {dataset_name}")
+    fold_metrics = {"accuracies": [], "train_times": [], "predict_times": []}
+    skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=0)
+
+    for fold, (train_index, test_index) in enumerate(skf.split(X, np.asarray(y))):
+        X_train, X_test = X[train_index], X[test_index]
+        y_train, y_test = y[train_index], y[test_index]
+
+        preprocess_pipeline = Pipeline(
+            [
+                ("scaler", StandardScaler()),
+                ("variance_threshold", VarianceThreshold(threshold=0.1)),
+                ("correlation_filter", CorrelationFilter(threshold=0.9)),
+                ("pca", PCA(n_components=0.9)),
+            ]
+        )
+        X_train_scaled = preprocess_pipeline.fit_transform(X_train)
+        X_test_scaled = preprocess_pipeline.transform(X_test)
+
+        try:
+            start_time = time.perf_counter()
+            model.fit(X_train_scaled, y_train)
+            fold_metrics["train_times"].append(time.perf_counter() - start_time)
+
+            start_time = time.perf_counter()
+            y_pred = model.predict(X_test_scaled)
+            fold_metrics["predict_times"].append(time.perf_counter() - start_time)
+            fold_metrics["accuracies"].append(accuracy_score(y_test, y_pred))
+        except Exception as e:
+            warn(f"  [Warning] Model '{model_name}' failed on fold {fold + 1}: {e}")
+            fold_metrics["train_times"].append(0.0)
+            fold_metrics["predict_times"].append(0.0)
+            fold_metrics["accuracies"].append(0.0)
+            continue
+
+    model_results = {
+        "model_name": model_name,
+        "dataset": dataset_name,
+        "hyperparameters": model.get_params(),
+        "metrics": {
+            "accuracy_mean": np.mean(fold_metrics["accuracies"]),
+            "accuracy_std": np.std(fold_metrics["accuracies"]),
+            "train_time_mean": np.mean(fold_metrics["train_times"]),
+            "train_time_std": np.std(fold_metrics["train_times"]),
+            "predict_time_mean": np.mean(fold_metrics["predict_times"]),
+            "predict_time_std": np.std(fold_metrics["predict_times"]),
+        },
+        "fold_metrics": fold_metrics,
+    }
+
+    save_result(dataset_name, model_name, model_results)
+    print(
+        f"    -> {model_name} on {dataset_name} Mean Accuracy: {model_results['metrics']['accuracy_mean']:.4f} "
+        f"(+/- {model_results['metrics']['accuracy_std']:.4f})"
+    )
+    return model_name, model_results
+
+
+def run_single_experiment(dataset_path: Path, parallel_models: bool = False):
+    """
+    Runs a comparative experiment for a single dataset.
+
+    This function can evaluate models sequentially or in parallel, controlled by the
+    `parallel_models` flag.
 
     Parameters:
         dataset_path: The path to the .parquet dataset file.
+        parallel_models: If True, evaluates models in parallel. Defaults to False.
     """
     dataset_name = dataset_path.stem
     print(f"--- Running experiment on: {dataset_name} ---")
 
-    # 1. Load Data
     data = pd.read_parquet(dataset_path)
     X = data.drop("target", axis=1).values
-    y = data["target"].values
+    y = data["target"].to_numpy()
 
-    # --- Experiment Configuration ---
     N_SPLITS = 10
-    N_OPTIMIZER_CALLS = 25  # Number of calls for Bayesian Optimization
+    N_OPTIMIZER_CALLS = 25
 
-    # --- 2. Define Models for Evaluation ---
     models_to_evaluate: list[tuple[str, Any]] = []
-
-    # Define all options for metrics and support sample methods
     metrics = [
         "dissimilarity",
         "silhouette",
@@ -102,18 +174,20 @@ def run_single_experiment(dataset_path: Path):
     ]
     support_samples_methods = ["hnbf", "margin_clustering", "gabriel_graph"]
 
-    # Generate a model for each combination of metric and support sample method
     for metric in metrics:
         for ss_method in support_samples_methods:
             model_name = f"parameterless_knn_{metric}_{ss_method}"
-            model_instance = ParameterlessKNNClassifier(
-                metric=metric,
-                support_samples_method=ss_method,
-                n_optimizer_calls=N_OPTIMIZER_CALLS,
+            models_to_evaluate.append(
+                (
+                    model_name,
+                    ParameterlessKNNClassifier(
+                        metric=metric,
+                        support_samples_method=ss_method,
+                        n_optimizer_calls=N_OPTIMIZER_CALLS,
+                    ),
+                )
             )
-            models_to_evaluate.append((model_name, model_instance))
 
-    # Add the scikit-learn wrapper as a baseline for comparison
     models_to_evaluate.append(
         (
             "sklearn_knn_wrapper",
@@ -121,76 +195,52 @@ def run_single_experiment(dataset_path: Path):
         )
     )
 
-    # --- 3. Run Cross-Validation for Each Model ---
-    skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=0)
     all_fold_accuracies = {}
 
-    print(f"  Running {N_SPLITS}-Fold Cross-Validation for each model...")
-    for model_name, model in models_to_evaluate:
-        print(f"\n  Evaluating model: {model_name}")
-        fold_metrics = {"accuracies": [], "train_times": [], "predict_times": []}
-
-        for fold, (train_index, test_index) in enumerate(skf.split(X, np.asarray(y))):
-            print(f"    - Fold {fold + 1}/{N_SPLITS}")
-            X_train, X_test = X[train_index], X[test_index]
-            y_train, y_test = y[train_index], y[test_index]
-
-            # Pre-process data: Fit on train set, transform both using a pipeline
-            preprocess_pipeline = Pipeline(
-                [
-                    ("scaler", StandardScaler()),
-                    ("variance_threshold", VarianceThreshold(threshold=0.1)),
-                    ("correlation_filter", CorrelationFilter(threshold=0.9)),
-                    ("pca", PCA(n_components=0.9)),
-                ]
-            )
-            X_train_scaled = preprocess_pipeline.fit_transform(X_train)
-            X_test_scaled = preprocess_pipeline.transform(X_test)
-
-            try:
-                # --- Train ---
-                start_time = time.perf_counter()
-                model.fit(X_train_scaled, y_train)
-                fold_metrics["train_times"].append(time.perf_counter() - start_time)
-
-                # --- Predict ---
-                start_time = time.perf_counter()
-                y_pred = model.predict(X_test_scaled)
-                fold_metrics["predict_times"].append(time.perf_counter() - start_time)
-                fold_metrics["accuracies"].append(accuracy_score(y_test, y_pred))
-
-            except Exception as e:
-                warn(f"  [Warning] Model '{model_name}' failed on fold {fold + 1}: {e}")
-                fold_metrics["train_times"].append(0.0)
-                fold_metrics["predict_times"].append(0.0)
-                fold_metrics["accuracies"].append(0.0)
-                continue
-
-        # --- Aggregate and Save Results for the current model ---
-        model_results = {
-            "model_name": model_name,
-            "dataset": dataset_name,
-            "hyperparameters": model.get_params(),
-            "metrics": {
-                "accuracy_mean": np.mean(fold_metrics["accuracies"]),
-                "accuracy_std": np.std(fold_metrics["accuracies"]),
-                "train_time_mean": np.mean(fold_metrics["train_times"]),
-                "train_time_std": np.std(fold_metrics["train_times"]),
-                "predict_time_mean": np.mean(fold_metrics["predict_times"]),
-                "predict_time_std": np.std(fold_metrics["predict_times"]),
-            },
-            "fold_metrics": fold_metrics,
-        }
-        save_result(dataset_name, model_name, model_results)
+    if parallel_models:
         print(
-            f"    -> Mean Accuracy: {model_results['metrics']['accuracy_mean']:.4f} "
-            f"(+/- {model_results['metrics']['accuracy_std']:.4f})"
+            f"  Running {N_SPLITS}-Fold Cross-Validation in PARALLEL for each model..."
         )
+        # Use a fraction of cores to avoid overwhelming the system
+        cpu_count = os.cpu_count() or 1
+        max_workers = max(1, cpu_count // 2)
+        with ProcessPoolExecutor(max_workers=max_workers) as executor:
+            future_to_model = {
+                executor.submit(
+                    evaluate_model, model_tuple, X, y, dataset_name, N_SPLITS
+                ): model_tuple[0]
+                for model_tuple in models_to_evaluate
+            }
 
-        # Store accuracies for the final statistical comparison
-        all_fold_accuracies[model_name] = fold_metrics["accuracies"]
+            for future in as_completed(future_to_model):
+                model_name = future_to_model[future]
+                try:
+                    _, model_results = future.result()
+                    all_fold_accuracies[model_name] = model_results["fold_metrics"][
+                        "accuracies"
+                    ]
+                except Exception as exc:
+                    print(
+                        f"  [ERROR] Model '{model_name}' on dataset '{dataset_name}' generated an exception: {exc}"
+                    )
 
-    # --- 4. Perform and Save Statistical Comparisons ---
+    else:
+        print(
+            f"  Running {N_SPLITS}-Fold Cross-Validation SEQUENTIALLY for each model..."
+        )
+        for model_tuple in models_to_evaluate:
+            try:
+                model_name, model_results = evaluate_model(
+                    model_tuple, X, y, dataset_name, N_SPLITS
+                )
+                all_fold_accuracies[model_name] = model_results["fold_metrics"][
+                    "accuracies"
+                ]
+            except Exception as exc:
+                print(
+                    f"  [ERROR] Evaluation failed for model '{model_tuple[0]}': {exc}"
+                )
+
     print("\n  Performing statistical tests...")
     statistical_results = []
     reference_model_name = "sklearn_knn_wrapper"
@@ -198,12 +248,10 @@ def run_single_experiment(dataset_path: Path):
 
     if reference_accuracies is None:
         print(
-            f"  [Warning] Reference model '{reference_model_name}' not found. "
-            "Skipping statistical tests."
+            f"  [Warning] Reference model '{reference_model_name}' not found. Skipping statistical tests."
         )
         return
 
-    # Compare each custom model to the reference scikit-learn wrapper
     for model_name, accuracies in all_fold_accuracies.items():
         if model_name == reference_model_name:
             continue
@@ -213,24 +261,21 @@ def run_single_experiment(dataset_path: Path):
         stat, p_value, conclusion = None, None, ""
 
         try:
-            # Perform the Wilcoxon signed-rank test
             stat, p_value = wilcoxon(
                 accuracies, reference_accuracies, zero_method="zsplit"
             )
             stat, p_value = cast(float, stat), cast(float, p_value)
 
-            # Interpret the p-value
             if p_value > alpha:
                 conclusion = f"The models are statistically equivalent (p={p_value:.4f} > {alpha})."
             else:
                 mean_diff = np.mean(accuracies) - np.mean(reference_accuracies)
-                if mean_diff > 0:
-                    conclusion = f"'{model_name}' is significantly better than '{reference_model_name}' (p={p_value:.4f} <= {alpha})."
-                else:
-                    conclusion = f"'{reference_model_name}' is significantly better than '{model_name}' (p={p_value:.4f} <= {alpha})."
-
+                conclusion = (
+                    f"'{model_name}' is significantly better than '{reference_model_name}' (p={p_value:.4f} <= {alpha})."
+                    if mean_diff > 0
+                    else f"'{reference_model_name}' is significantly better than '{model_name}' (p={p_value:.4f} <= {alpha})."
+                )
         except ValueError:
-            # This can occur if all accuracy differences are zero
             stat, p_value = 0.0, 1.0
             conclusion = "Could not perform Wilcoxon test as all differences are zero. Models are equivalent."
 
@@ -247,40 +292,53 @@ def run_single_experiment(dataset_path: Path):
         statistical_results.append(stat_result)
         print(f"      {conclusion}")
 
-    # Save all statistical results to a single file for the dataset
     if statistical_results:
         save_all_stat_tests(dataset_name, statistical_results)
 
 
 def main():
     """
-    Main function to find datasets and orchestrate the experiments.
+    Main function to find datasets and orchestrate the experiments with parallel execution.
     """
-    # Verify dataset directory exists
     if not DATASETS_DIR.exists() or not DATASETS_DIR.is_dir():
         print(f"Error: Dataset directory not found at '{DATASETS_DIR}'")
         print("Please run 'python store_datasets/store_sets.py sets/' first.")
         return
 
-    # Find all .parquet dataset files
     dataset_paths = sorted(list(DATASETS_DIR.glob("*.parquet")))
     if not dataset_paths:
         print(f"Error: No .parquet datasets found in '{DATASETS_DIR}'")
         return
 
-    # Create the main results directory
     RESULTS_DIR.mkdir(exist_ok=True)
-
     print("=" * 80)
     print(" " * 25 + "--- STARTING EXPERIMENTS ---")
     print("=" * 80)
 
-    for path in dataset_paths:
-        try:
-            run_single_experiment(path)
-        except Exception as e:
-            print(f"\n[ERROR] Failed to run experiment on '{path.stem}'.")
-            print(f"  Reason: {e}\n")
+    # Dynamically choose parallelization strategy
+    if len(dataset_paths) > 1:
+        # Strategy 1: Parallelize by dataset
+        print(
+            f"Found {len(dataset_paths)} datasets. Running experiments in parallel for each dataset."
+        )
+        max_workers = min(len(dataset_paths), os.cpu_count() or 1)
+        with ProcessPoolExecutor(max_workers=max_workers) as executor:
+            future_to_path = {
+                executor.submit(run_single_experiment, path): path
+                for path in dataset_paths
+            }
+            for future in as_completed(future_to_path):
+                path = future_to_path[future]
+                try:
+                    future.result()  # Retrieve result to raise any exceptions
+                except Exception as exc:
+                    print(
+                        f"\n[ERROR] Dataset '{path.stem}' failed with an exception: {exc}"
+                    )
+    elif len(dataset_paths) == 1:
+        # Strategy 2: Parallelize by model within the single dataset
+        print("Found 1 dataset. Running experiments in parallel for each model.")
+        run_single_experiment(dataset_paths[0], parallel_models=True)
 
     print("=" * 80)
     print("--- ALL EXPERIMENTS COMPLETE ---")
