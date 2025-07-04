@@ -86,7 +86,7 @@ def run_single_experiment(dataset_path: Path):
 
     # --- Experiment Configuration ---
     N_SPLITS = 10
-    N_OPTIMIZER_CALLS = 10  # Number of calls for Bayesian Optimization
+    N_OPTIMIZER_CALLS = 25  # Number of calls for Bayesian Optimization
 
     # --- 2. Define Models for Evaluation ---
     models_to_evaluate: list[tuple[str, Any]] = []

@@ -130,8 +130,8 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
             )
             Q = similarity_space(kernel_matrix, self.y_ref_, classes=self.classes_)
 
-            factor_h = (params["h"] - h_min) / (h_max - h_min)
-            factor_k = (params["k"] - k_min) / (k_min - k_max)
+            factor_h = (float(params["h"]) - float(h_min)) / float(h_max - h_min)
+            factor_k = (float(params["k"]) - float(k_min)) / float(k_max - k_min)
 
             # Pass self.classes_ to ensure the metric function is aware of all
             # original classes, even if some are missing from y_ref_.
