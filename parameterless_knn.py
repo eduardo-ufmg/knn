@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
 from sklearn.utils.multiclass import unique_labels
 from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 
@@ -169,7 +169,9 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
 
                 accuracies = []
 
-                for train_index, test_index in KFold().split(self.X_ref_):
+                for train_index, test_index in StratifiedKFold(shuffle=True).split(
+                    self.X_ref_, self.y_ref_
+                ):
                     X_train, X_test = self.X_ref_[train_index], self.X_ref_[test_index]
                     y_train, y_test = self.y_ref_[train_index], self.y_ref_[test_index]
 
