@@ -137,10 +137,10 @@ def run_all_tests():
     # --- 1. Experiment Configuration ---
     print("Configuring the experiment...")
     RANDOM_STATE = 0
-    N_SAMPLES = np.random.randint(500, 2000)
-    N_FEATURES = np.random.randint(5, 50)
+    N_SAMPLES = np.random.randint(100, 1000)
+    N_FEATURES = np.random.randint(2, 20)
     N_INFORMATIVE = np.random.randint(1, N_FEATURES // 2 + 1)
-    N_CLASSES = np.random.randint(2, 10)
+    N_CLASSES = np.random.randint(2, 8)
 
     # --- 2. Data Generation & Splitting ---
     print(
@@ -167,8 +167,9 @@ def run_all_tests():
         "convex_hull_inter",
         "convex_hull_intra",
         "opposite_hyperplane",
+        "accuracy",
     ]
-    support_sample_methods = ["hnbf", "margin_clustering", "gabriel_graph"]
+    support_sample_methods = ["margin_clustering", "gabriel_graph", "none"]
 
     for metric in optimization_metrics:
         for method in support_sample_methods:

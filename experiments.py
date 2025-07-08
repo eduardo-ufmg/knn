@@ -24,7 +24,7 @@ DATASETS_DIR = Path("sets/")
 RESULTS_DIR = Path("results/")
 
 
-def evaluate_model(dataset_path, model_name, model, n_splits=10, n_opt_calls=25):
+def evaluate_model(dataset_path, model_name, model, n_splits=10, n_opt_calls=10):
     """
     Load data, run CV for one model on one dataset, and return a dict of results.
     Any exception bubbles up, and will be caught in the main loop.
@@ -104,7 +104,7 @@ def main():
             for ss in ss_methods:
                 name = f"parameterless_knn_{m}_{ss}"
                 inst = ParameterlessKNNClassifier(
-                    metric=m, support_samples_method=ss, n_optimizer_calls=25
+                    metric=m, support_samples_method=ss, n_optimizer_calls=10
                 )
                 tasks.append((ds, name, inst))
         # add baseline
@@ -112,7 +112,7 @@ def main():
             (
                 ds,
                 "sklearn_knn_wrapper",
-                SklearnKNNParameterlessWrapper(n_optimizer_calls=25),
+                SklearnKNNParameterlessWrapper(n_optimizer_calls=10),
             )
         )
 

@@ -2,6 +2,8 @@ import warnings
 
 import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import KFold
 from sklearn.utils.multiclass import unique_labels
 from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 
@@ -27,13 +29,13 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
     Bayesian Optimization to find optimal hyperparameters.
 
     Parameters:
-    metric : str, default='dissimilarity'
-        The metric to optimize. Options: "dissimilarity", "silhouette", "spread", "convex_hull_inter", "convex_hull_intra", "opposite_hyperplane".
+    metric : str, default='accuracy'
+        The metric to optimize. Options: "dissimilarity", "silhouette", "spread", "convex_hull_inter", "convex_hull_intra", "opposite_hyperplane", 'accuracy'.
 
     support_samples_method : str, default='none'
         The method to find support samples. Options: 'hnbf', 'margin_clustering', 'gabriel_graph', 'none'.
 
-    n_optimizer_calls : int, default=25
+    n_optimizer_calls : int, default=10
         The number of evaluations for the Bayesian optimizer. More calls can lead
         to better parameters but increase fitting time.
 
@@ -48,9 +50,9 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
 
     def __init__(
         self,
-        metric: str = "dissimilarity",
+        metric: str = "accuracy",
         support_samples_method: str = "none",
-        n_optimizer_calls: int = 25,
+        n_optimizer_calls: int = 10,
     ):
         if metric not in [
             "dissimilarity",
@@ -59,11 +61,12 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
             "convex_hull_inter",
             "convex_hull_intra",
             "opposite_hyperplane",
+            "accuracy",
         ]:
             raise ValueError(
                 f"Invalid metric '{metric}'. Choose from 'dissimilarity', "
                 "'silhouette', 'spread', 'convex_hull_inter', "
-                "'convex_hull_intra', 'opposite_hyperplane'."
+                "'convex_hull_intra', 'opposite_hyperplane', 'accuracy'."
             )
 
         if support_samples_method not in [
@@ -92,16 +95,6 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
         self.classes_ = unique_labels(y)
         self.metric_ = self.metric
 
-        metric_functions = {
-            "dissimilarity": dissimilarity,
-            "silhouette": silhouette,
-            "spread": spread,
-            "convex_hull_inter": convex_hull_inter,
-            "convex_hull_intra": convex_hull_intra,
-            "opposite_hyperplane": opposite_hyperplane,
-        }
-        metric_func = metric_functions[self.metric_]
-
         X_ref, y_ref = support_samples(X, y, method=self.support_samples_method)
         if X_ref.shape[0] < 2:
             self.X_ref_, self.y_ref_ = X, y
@@ -128,27 +121,72 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
         ]
 
         # 2. Define the objective function to be minimized
-        @use_named_args(space)
-        def objective(**params):
-            kernel_matrix = sparse_multivarite_rbf_kernel(
-                self.X_ref_, self.X_ref_, **params
-            )
-            Q = similarity_space(kernel_matrix, self.y_ref_, classes=self.classes_)
+        if self.metric_ in [
+            "dissimilarity",
+            "silhouette",
+            "spread",
+            "convex_hull_inter",
+            "convex_hull_intra",
+            "opposite_hyperplane",
+        ]:
 
-            factor_h = (float(params["h"]) - float(h_min)) / float(h_max - h_min)
-            factor_k = (float(params["k"]) - float(k_min)) / float(k_max - k_min)
+            metric_functions = {
+                "dissimilarity": dissimilarity,
+                "silhouette": silhouette,
+                "spread": spread,
+                "convex_hull_inter": convex_hull_inter,
+                "convex_hull_intra": convex_hull_intra,
+                "opposite_hyperplane": opposite_hyperplane,
+            }
+            metric_func = metric_functions[self.metric_]
 
-            # Pass self.classes_ to ensure the metric function is aware of all
-            # original classes, even if some are missing from y_ref_.
-            score = metric_func(
-                Q,
-                self.y_ref_,
-                factor_h=factor_h,
-                factor_k=factor_k,
-                classes=self.classes_,
-            )
-            # We minimize the negative score because the optimizer finds minima
-            return -score
+            @use_named_args(space)
+            def objective(**params):
+                kernel_matrix = sparse_multivarite_rbf_kernel(
+                    self.X_ref_, self.X_ref_, **params
+                )
+                Q = similarity_space(kernel_matrix, self.y_ref_, classes=self.classes_)
+
+                factor_h = (float(params["h"]) - float(h_min)) / float(h_max - h_min)
+                factor_k = (float(params["k"]) - float(k_min)) / float(k_max - k_min)
+
+                # Pass self.classes_ to ensure the metric function is aware of all
+                # original classes, even if some are missing from y_ref_.
+                score = metric_func(
+                    Q,
+                    self.y_ref_,
+                    factor_h=factor_h,
+                    factor_k=factor_k,
+                    classes=self.classes_,
+                )
+                # We minimize the negative score because the optimizer finds minima
+                return -score
+
+        elif self.metric_ == "accuracy":
+
+            @use_named_args(space)
+            def objective(**params):
+
+                accuracies = []
+
+                for train_index, test_index in KFold().split(self.X_ref_):
+                    X_train, X_test = self.X_ref_[train_index], self.X_ref_[test_index]
+                    y_train, y_test = self.y_ref_[train_index], self.y_ref_[test_index]
+
+                    kernel_matrix = sparse_multivarite_rbf_kernel(
+                        X_test, X_train, h=params["h"], k=params["k"]
+                    )
+                    Q = similarity_space(kernel_matrix, y_train, classes=self.classes_)
+                    row_sums = Q.sum(axis=1, keepdims=True)
+                    n_classes = len(self.classes_)
+                    uniform_prob = 1.0 / n_classes
+                    probabilities = np.full(Q.shape, uniform_prob, dtype=np.float64)
+                    np.divide(Q, row_sums, out=probabilities, where=row_sums > 0)
+                    predictions = self.classes_[np.argmax(probabilities, axis=1)]
+                    accuracies.append(accuracy_score(y_test, predictions))
+
+                # Return the negative mean accuracy to minimize it
+                return -np.mean(accuracies)
 
         # 3. Run the optimizer
         # This context manager will temporarily catch and handle warnings.
