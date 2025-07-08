@@ -117,7 +117,8 @@ def main():
         )
 
     # 2) Dispatch all tasks into one pool
-    cpu = os.cpu_count() or 1
+    cpu_count = os.cpu_count()
+    cpu = cpu_count // 2 if cpu_count else 1
     with ProcessPoolExecutor(max_workers=cpu) as exe:
         future_to_task = {
             exe.submit(evaluate_model, ds, nm, mdl): (ds.stem, nm)
