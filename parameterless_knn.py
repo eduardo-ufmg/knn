@@ -30,8 +30,8 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
     metric : str, default='dissimilarity'
         The metric to optimize. Options: "dissimilarity", "silhouette", "spread", "convex_hull_inter", "convex_hull_intra", "opposite_hyperplane".
 
-    support_samples_method : str, default='hnbf'
-        The method to find support samples. Options: 'hnbf', 'margin_clustering', 'gabriel_graph'.
+    support_samples_method : str, default='none'
+        The method to find support samples. Options: 'hnbf', 'margin_clustering', 'gabriel_graph', 'none'.
 
     n_optimizer_calls : int, default=25
         The number of evaluations for the Bayesian optimizer. More calls can lead
@@ -49,7 +49,7 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
     def __init__(
         self,
         metric: str = "dissimilarity",
-        support_samples_method: str = "hnbf",
+        support_samples_method: str = "none",
         n_optimizer_calls: int = 25,
     ):
         if metric not in [
@@ -66,10 +66,15 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
                 "'convex_hull_intra', 'opposite_hyperplane'."
             )
 
-        if support_samples_method not in ["hnbf", "margin_clustering", "gabriel_graph"]:
+        if support_samples_method not in [
+            "hnbf",
+            "margin_clustering",
+            "gabriel_graph",
+            "none",
+        ]:
             raise ValueError(
                 f"Invalid support_samples_method '{support_samples_method}'. "
-                "Choose from 'hnbf', 'margin_clustering', 'gabriel_graph'."
+                "Choose from 'hnbf', 'margin_clustering', 'gabriel_graph', 'none'."
             )
 
         if n_optimizer_calls <= 0:
