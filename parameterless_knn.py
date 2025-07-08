@@ -175,8 +175,15 @@ class ParameterlessKNNClassifier(BaseEstimator, ClassifierMixin):
                     X_train, X_test = self.X_ref_[train_index], self.X_ref_[test_index]
                     y_train, y_test = self.y_ref_[train_index], self.y_ref_[test_index]
 
+                    # Ensure k is not larger than the number of training samples
+                    k_fold = min(params["k"], X_train.shape[0])
+                    if k_fold == 0:
+                        # Handle cases where the training fold is empty
+                        accuracies.append(0)
+                        continue
+
                     kernel_matrix = sparse_multivarite_rbf_kernel(
-                        X_test, X_train, h=params["h"], k=params["k"]
+                        X_test, X_train, h=params["h"], k=k_fold
                     )
                     Q = similarity_space(kernel_matrix, y_train, classes=self.classes_)
                     row_sums = Q.sum(axis=1, keepdims=True)
