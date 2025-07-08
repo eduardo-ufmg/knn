@@ -8,7 +8,6 @@ from typing import cast
 import numpy as np
 import pandas as pd
 from scipy.stats import wilcoxon
-from sklearn.base import BaseEstimator
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.metrics import accuracy_score
@@ -98,8 +97,9 @@ def main():
             "convex_hull_inter",
             "convex_hull_intra",
             "opposite_hyperplane",
+            "accuracy",
         ]
-        ss_methods = ["hnbf", "margin_clustering", "gabriel_graph"]
+        ss_methods = ["hnbf", "margin_clustering", "gabriel_graph", "none"]
         for m in metrics:
             for ss in ss_methods:
                 name = f"parameterless_knn_{m}_{ss}"
