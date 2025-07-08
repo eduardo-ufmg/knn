@@ -25,7 +25,8 @@ RESULTS_DIR = Path("results/")
 
 def evaluate_model(dataset_path, model_name, model, n_splits=10, n_opt_calls=10):
     """
-    Load data, run CV for one model on one dataset, and return a dict of results.
+    Load data, run CV for one model on one dataset, and return a dict of results
+    and the list of fold accuracies.
     Any exception bubbles up, and will be caught in the main loop.
     """
     dataset = dataset_path.stem
@@ -75,9 +76,8 @@ def evaluate_model(dataset_path, model_name, model, n_splits=10, n_opt_calls=10)
             "predict_time_mean": float(np.mean(fold_metrics["predict_times"])),
             "predict_time_std": float(np.std(fold_metrics["predict_times"])),
         },
-        "fold_metrics": fold_metrics,
     }
-    return result
+    return result, fold_metrics["accuracies"]
 
 
 def main():
@@ -130,7 +130,8 @@ def main():
         for future in as_completed(future_to_task):
             ds_name, model_name = future_to_task[future]
             try:
-                res = future.result()
+                res, fold_accuracies = future.result()
+
                 # save JSON
                 outdir = RESULTS_DIR / ds_name
                 outdir.mkdir(exist_ok=True, parents=True)
@@ -138,9 +139,7 @@ def main():
                     json.dump(res, f, indent=4)
 
                 # collect accuracies
-                all_accuracies.setdefault(ds_name, {})[model_name] = res[
-                    "fold_metrics"
-                ]["accuracies"]
+                all_accuracies.setdefault(ds_name, {})[model_name] = fold_accuracies
                 print(
                     f"[OK] {ds_name:15} · {model_name:30} → {res['metrics']['accuracy_mean']:.4f}"
                 )
