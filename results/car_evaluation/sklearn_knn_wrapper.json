@@ -1,0 +1,14 @@
+{
+    "model_name": "sklearn_knn_wrapper",
+    "dataset": "car_evaluation",
+    "hyperparameters": {
+    },
+    "metrics": {
+        "accuracy_mean": 0.7621420889904557,
+        "accuracy_std": 0.04544347233435587,
+        "train_time_mean": 3.4708482100002582,
+        "train_time_std": 0.7324079000259905,
+        "predict_time_mean": 0.023836190000292846,
+        "predict_time_std": 0.008843591779011258
+    }
+}

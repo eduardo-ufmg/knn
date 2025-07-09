@@ -1,0 +1,14 @@
+{
+    "model_name": "sklearn_knn_wrapper",
+    "dataset": "spambase",
+    "hyperparameters": {
+    },
+    "metrics": {
+        "accuracy_mean": 0.8743765915306989,
+        "accuracy_std": 0.015867613091791806,
+        "train_time_mean": 38.295428270000414,
+        "train_time_std": 21.58544175328224,
+        "predict_time_mean": 0.3443269899995357,
+        "predict_time_std": 0.2529530014078077
+    }
+}

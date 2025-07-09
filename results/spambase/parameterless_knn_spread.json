@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_spread",
+    "dataset": "spambase",
+    "hyperparameters": {
+        "metric": "spread"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7550528152409697,
+        "accuracy_std": 0.016874008441519244,
+        "train_time_mean": 51.58968753999943,
+        "train_time_std": 7.922522843844441,
+        "predict_time_mean": 0.687947800000984,
+        "predict_time_std": 0.208806354674281
+    }
+}

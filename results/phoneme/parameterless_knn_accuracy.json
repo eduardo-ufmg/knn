@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_accuracy",
+    "dataset": "phoneme",
+    "hyperparameters": {
+        "metric": "accuracy"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8093937838022865,
+        "accuracy_std": 0.01759076672039043,
+        "train_time_mean": 48.991321959999915,
+        "train_time_std": 2.365542092447662,
+        "predict_time_mean": 0.047205379999650174,
+        "predict_time_std": 0.015869710885626172
+    }
+}

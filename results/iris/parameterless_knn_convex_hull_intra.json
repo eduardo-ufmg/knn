@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_convex_hull_intra",
+    "dataset": "iris",
+    "hyperparameters": {
+        "metric": "convex_hull_intra"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8200000000000001,
+        "accuracy_std": 0.07916228058025279,
+        "train_time_mean": 0.32131655999837677,
+        "train_time_std": 0.040557362931700425,
+        "predict_time_mean": 0.0019460000010440126,
+        "predict_time_std": 0.0001786780642948693
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_spread",
+    "dataset": "monk",
+    "hyperparameters": {
+        "metric": "spread"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7477272727272727,
+        "accuracy_std": 0.06255751524938091,
+        "train_time_mean": 0.5610145600003307,
+        "train_time_std": 0.12827725015146613,
+        "predict_time_mean": 0.003254610000294633,
+        "predict_time_std": 0.00035435689814572035
+    }
+}

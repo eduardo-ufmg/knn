@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_convex_hull_intra",
+    "dataset": "phoneme",
+    "hyperparameters": {
+        "metric": "convex_hull_intra"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7755329636475662,
+        "accuracy_std": 0.011022899292303217,
+        "train_time_mean": 31.158902350001153,
+        "train_time_std": 2.0779100122385747,
+        "predict_time_mean": 0.26877192000101785,
+        "predict_time_std": 0.054571680210153226
+    }
+}

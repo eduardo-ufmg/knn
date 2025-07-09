@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_accuracy",
+    "dataset": "heart_disease",
+    "hyperparameters": {
+        "metric": "accuracy"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5778494623655913,
+        "accuracy_std": 0.050306494993666656,
+        "train_time_mean": 3.152977290000854,
+        "train_time_std": 2.31682355150723,
+        "predict_time_mean": 0.0024392100000113714,
+        "predict_time_std": 0.0002807007237423525
+    }
+}

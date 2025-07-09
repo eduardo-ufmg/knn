@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_dissimilarity",
+    "dataset": "yeast",
+    "hyperparameters": {
+        "metric": "dissimilarity"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5294125758411472,
+        "accuracy_std": 0.0261718616038356,
+        "train_time_mean": 3.882111089999671,
+        "train_time_std": 0.4631234864792729,
+        "predict_time_mean": 0.029674809997231932,
+        "predict_time_std": 0.00993556355364644
+    }
+}

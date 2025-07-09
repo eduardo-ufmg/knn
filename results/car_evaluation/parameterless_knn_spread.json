@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_spread",
+    "dataset": "car_evaluation",
+    "hyperparameters": {
+        "metric": "spread"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7013913160371018,
+        "accuracy_std": 0.003576835795016748,
+        "train_time_mean": 3.2365630799999052,
+        "train_time_std": 0.16937577609988363,
+        "predict_time_mean": 0.023832150000089314,
+        "predict_time_std": 0.0008491653433555409
+    }
+}

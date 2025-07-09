@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_dissimilarity",
+    "dataset": "ionosphere",
+    "hyperparameters": {
+        "metric": "dissimilarity"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7803174603174603,
+        "accuracy_std": 0.0534013172147664,
+        "train_time_mean": 1.4258278700013762,
+        "train_time_std": 1.0838079155702647,
+        "predict_time_mean": 0.07042293999984395,
+        "predict_time_std": 0.03201393107459868
+    }
+}

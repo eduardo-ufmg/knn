@@ -1,0 +1,14 @@
+{
+    "model_name": "sklearn_knn_wrapper",
+    "dataset": "phoneme",
+    "hyperparameters": {
+    },
+    "metrics": {
+        "accuracy_mean": 0.8327100020538097,
+        "accuracy_std": 0.015110892641321767,
+        "train_time_mean": 28.881923610001103,
+        "train_time_std": 3.0551355302636916,
+        "predict_time_mean": 0.09679388000222389,
+        "predict_time_std": 0.027194779303233517
+    }
+}

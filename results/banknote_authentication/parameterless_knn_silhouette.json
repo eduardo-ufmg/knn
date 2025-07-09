@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_silhouette",
+    "dataset": "banknote_authentication",
+    "hyperparameters": {
+        "metric": "silhouette"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8877446313339681,
+        "accuracy_std": 0.028499152823080975,
+        "train_time_mean": 1.5851666499998829,
+        "train_time_std": 0.11797416076328295,
+        "predict_time_mean": 0.010814689998369431,
+        "predict_time_std": 0.0009727229937377347
+    }
+}

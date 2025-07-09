@@ -1,0 +1,14 @@
+{
+    "model_name": "sklearn_knn_wrapper",
+    "dataset": "iris",
+    "hyperparameters": {
+    },
+    "metrics": {
+        "accuracy_mean": 0.8266666666666668,
+        "accuracy_std": 0.06798692684790382,
+        "train_time_mean": 0.5340307999998913,
+        "train_time_std": 0.14098742419016358,
+        "predict_time_mean": 0.0012664200003200676,
+        "predict_time_std": 0.00029131183635310926
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_accuracy",
+    "dataset": "wine",
+    "hyperparameters": {
+        "metric": "accuracy"
+    },
+    "metrics": {
+        "accuracy_mean": 0.9833333333333334,
+        "accuracy_std": 0.02545875386086579,
+        "train_time_mean": 5.859815829999571,
+        "train_time_std": 0.4680591474607194,
+        "predict_time_mean": 0.0027116999990539625,
+        "predict_time_std": 0.0009918640149333834
+    }
+}

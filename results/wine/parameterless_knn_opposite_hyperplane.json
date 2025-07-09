@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane",
+    "dataset": "wine",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane"
+    },
+    "metrics": {
+        "accuracy_mean": 0.9718954248366012,
+        "accuracy_std": 0.028119770933724135,
+        "train_time_mean": 0.32646157999915887,
+        "train_time_std": 0.04251192510789585,
+        "predict_time_mean": 0.0027570300000661517,
+        "predict_time_std": 0.000568437997978375
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_silhouette",
+    "dataset": "titanic",
+    "hyperparameters": {
+        "metric": "silhouette"
+    },
+    "metrics": {
+        "accuracy_mean": 0.773875513799178,
+        "accuracy_std": 0.025793970467970075,
+        "train_time_mean": 2.7698058599984505,
+        "train_time_std": 0.3517241698940526,
+        "predict_time_mean": 0.018448729999363422,
+        "predict_time_std": 0.004830942211331652
+    }
+}

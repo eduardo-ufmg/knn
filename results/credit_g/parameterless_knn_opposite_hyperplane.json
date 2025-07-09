@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane",
+    "dataset": "credit_g",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane"
+    },
+    "metrics": {
+        "accuracy_mean": 0.703,
+        "accuracy_std": 0.007810249675906661,
+        "train_time_mean": 3.872023299999273,
+        "train_time_std": 2.5103995506838803,
+        "predict_time_mean": 0.16137461999969674,
+        "predict_time_std": 0.12771593789138827
+    }
+}

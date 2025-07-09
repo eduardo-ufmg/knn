@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_convex_hull_inter",
+    "dataset": "credit_g",
+    "hyperparameters": {
+        "metric": "convex_hull_inter"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7,
+        "accuracy_std": 0.0,
+        "train_time_mean": 3.980520830000023,
+        "train_time_std": 2.3488969814068814,
+        "predict_time_mean": 0.14936062999913702,
+        "predict_time_std": 0.09802816169367097
+    }
+}

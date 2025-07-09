@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_spread",
+    "dataset": "yeast",
+    "hyperparameters": {
+        "metric": "spread"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5294125758411472,
+        "accuracy_std": 0.0261718616038356,
+        "train_time_mean": 3.954080699998303,
+        "train_time_std": 0.7038828425528583,
+        "predict_time_mean": 0.02234124000024167,
+        "predict_time_std": 0.0035793143738033183
+    }
+}

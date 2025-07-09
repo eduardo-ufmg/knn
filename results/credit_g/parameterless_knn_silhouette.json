@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_silhouette",
+    "dataset": "credit_g",
+    "hyperparameters": {
+        "metric": "silhouette"
+    },
+    "metrics": {
+        "accuracy_mean": 0.708,
+        "accuracy_std": 0.013266499161421611,
+        "train_time_mean": 4.006072980000317,
+        "train_time_std": 2.111852923486964,
+        "predict_time_mean": 0.15472037999934402,
+        "predict_time_std": 0.0903531394983934
+    }
+}

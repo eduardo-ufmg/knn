@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_accuracy",
+    "dataset": "credit_g",
+    "hyperparameters": {
+        "metric": "accuracy"
+    },
+    "metrics": {
+        "accuracy_mean": 0.725,
+        "accuracy_std": 0.031064449134018162,
+        "train_time_mean": 14.604532710000058,
+        "train_time_std": 7.357285783823222,
+        "predict_time_mean": 0.2986154300015187,
+        "predict_time_std": 0.17084910235023953
+    }
+}

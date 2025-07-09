@@ -1,0 +1,14 @@
+{
+    "model_name": "sklearn_knn_wrapper",
+    "dataset": "wine",
+    "hyperparameters": {
+    },
+    "metrics": {
+        "accuracy_mean": 0.9777777777777779,
+        "accuracy_std": 0.027216552697590882,
+        "train_time_mean": 0.70499703999958,
+        "train_time_std": 0.14454832707999346,
+        "predict_time_mean": 0.0012722500003292225,
+        "predict_time_std": 0.0003986619674450584
+    }
+}

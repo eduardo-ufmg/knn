@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_spread",
+    "dataset": "mushroom",
+    "hyperparameters": {
+        "metric": "spread"
+    },
+    "metrics": {
+        "accuracy_mean": 0.915436351407849,
+        "accuracy_std": 0.010974807208691198,
+        "train_time_mean": 67.0273877599997,
+        "train_time_std": 23.011573234651898,
+        "predict_time_mean": 0.5374505599989788,
+        "predict_time_std": 0.3027456832639114
+    }
+}

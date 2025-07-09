@@ -1,0 +1,14 @@
+{
+    "model_name": "sklearn_knn_wrapper",
+    "dataset": "credit_g",
+    "hyperparameters": {
+    },
+    "metrics": {
+        "accuracy_mean": 0.717,
+        "accuracy_std": 0.012688577540449532,
+        "train_time_mean": 23.91415439999837,
+        "train_time_std": 9.870404091077187,
+        "predict_time_mean": 0.2015549200004898,
+        "predict_time_std": 0.10551366377716048
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_silhouette",
+    "dataset": "heart_disease",
+    "hyperparameters": {
+        "metric": "silhouette"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5741935483870967,
+        "accuracy_std": 0.045505599934406074,
+        "train_time_mean": 0.29175012999912725,
+        "train_time_std": 0.017735275151840712,
+        "predict_time_mean": 0.0024590899993199855,
+        "predict_time_std": 0.00013441975806949833
+    }
+}

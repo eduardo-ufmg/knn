@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_dissimilarity",
+    "dataset": "titanic",
+    "hyperparameters": {
+        "metric": "dissimilarity"
+    },
+    "metrics": {
+        "accuracy_mean": 0.773875513799178,
+        "accuracy_std": 0.025793970467970075,
+        "train_time_mean": 2.5858856200000444,
+        "train_time_std": 0.35848540076210345,
+        "predict_time_mean": 0.02110149999934947,
+        "predict_time_std": 0.005661463850136315
+    }
+}

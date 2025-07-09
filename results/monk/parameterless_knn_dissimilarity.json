@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_dissimilarity",
+    "dataset": "monk",
+    "hyperparameters": {
+        "metric": "dissimilarity"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7477272727272727,
+        "accuracy_std": 0.06255751524938091,
+        "train_time_mean": 0.3855417300008412,
+        "train_time_std": 0.03857469311311714,
+        "predict_time_mean": 0.0030186700008925983,
+        "predict_time_std": 0.0002303324571808565
+    }
+}

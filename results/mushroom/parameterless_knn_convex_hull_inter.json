@@ -1,0 +1,15 @@
+{
+    "model_name": "parameterless_knn_convex_hull_inter",
+    "dataset": "mushroom",
+    "hyperparameters": {
+        "metric": "convex_hull_inter"
+    },
+    "metrics": {
+        "accuracy_mean": 0.892665521482801,
+        "accuracy_std": 0.010984483738610775,
+        "train_time_mean": 56.455817010000466,
+        "train_time_std": 5.392148104827398,
+        "predict_time_mean": 0.7800645799994527,
+        "predict_time_std": 0.14288712584324736
+    }
+}

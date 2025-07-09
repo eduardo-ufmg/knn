@@ -1,0 +1,14 @@
+{
+    "model_name": "sklearn_knn_wrapper",
+    "dataset": "yeast",
+    "hyperparameters": {
+    },
+    "metrics": {
+        "accuracy_mean": 0.5909450266593124,
+        "accuracy_std": 0.023155169758140127,
+        "train_time_mean": 3.249128519999067,
+        "train_time_std": 0.36038206522273775,
+        "predict_time_mean": 0.013592009999410948,
+        "predict_time_std": 0.007290604041245574
+    }
+}
