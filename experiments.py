@@ -3,7 +3,7 @@ import os
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
@@ -130,7 +130,7 @@ def main():
         }
 
         # 4) As tasks finish, save results and aggregate accuracies
-        all_accuracies: Dict[str, Dict[str, List[float]]] = {}
+        all_accuracies: dict[str, dict[str, list[float]]] = {}
         for future in as_completed(future_to_task):
             ds_name, model_name = future_to_task[future]
             try:
@@ -159,7 +159,7 @@ def main():
             )
             continue
 
-        stats: List[Dict[str, Any]] = []
+        stats: list[dict[str, Any]] = []
         # Iterate over all models that were supposed to run
         for model_name in all_model_names:
             if model_name == "sklearn_knn_wrapper":
