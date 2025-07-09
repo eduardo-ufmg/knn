@@ -4,11 +4,10 @@
     "hyperparameters": {
     },
     "metrics": {
-        "accuracy_mean": 0.8260317460317459,
-        "accuracy_std": 0.05373994658920334,
-        "train_time_mean": 22.753001930000757,
-        "train_time_std": 7.984818115912266,
-        "predict_time_mean": 0.20205048999923747,
-        "predict_time_std": 0.08999527726579952
+        "accuracy_mean": 0.826,
+
+        "train_time_mean": 22.753,
+
+        "predict_time_mean": 0.202
     }
 }

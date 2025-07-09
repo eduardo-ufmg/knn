@@ -5,11 +5,10 @@
         "metric": "opposite_hyperplane"
     },
     "metrics": {
-        "accuracy_mean": 0.7803174603174603,
-        "accuracy_std": 0.0534013172147664,
-        "train_time_mean": 1.2846667200014052,
-        "train_time_std": 0.4733729287014947,
-        "predict_time_mean": 0.08243635000108043,
-        "predict_time_std": 0.06149918559282521
+        "accuracy_mean": 0.780,
+
+        "train_time_mean": 1.284,
+
+        "predict_time_mean": 0.082
     }
 }

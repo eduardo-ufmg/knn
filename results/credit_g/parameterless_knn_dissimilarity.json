@@ -5,11 +5,10 @@
         "metric": "dissimilarity"
     },
     "metrics": {
-        "accuracy_mean": 0.7,
-        "accuracy_std": 0.0,
-        "train_time_mean": 3.945028609997826,
-        "train_time_std": 2.191046755952459,
-        "predict_time_mean": 0.15379776999980094,
-        "predict_time_std": 0.11446984194758865
+        "accuracy_mean": 0.,
+
+        "train_time_mean": 3.945,
+
+        "predict_time_mean": 0.153
     }
 }

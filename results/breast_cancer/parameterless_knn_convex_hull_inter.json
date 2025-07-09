@@ -5,11 +5,10 @@
         "metric": "convex_hull_inter"
     },
     "metrics": {
-        "accuracy_mean": 0.887531328320802,
-        "accuracy_std": 0.028464671610876062,
-        "train_time_mean": 0.48531764000144906,
-        "train_time_std": 0.08384553775514714,
-        "predict_time_mean": 0.0037701399996876717,
-        "predict_time_std": 0.0005934167978192826
+        "accuracy_mean": 0.887,
+
+        "train_time_mean": 0.485,
+
+        "predict_time_mean": 0.00377
     }
 }
