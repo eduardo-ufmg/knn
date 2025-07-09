@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_dissimilarity_none",
+    "dataset": "spambase",
+    "hyperparameters": {
+        "metric": "dissimilarity",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.78809346411393,
+        "accuracy_std": 0.0167918240264899,
+        "train_time_mean": 11.72414937999929,
+        "train_time_std": 0.5463677731791348,
+        "predict_time_mean": 0.14373738000067532,
+        "predict_time_std": 0.029639448351909303
+    }
+}

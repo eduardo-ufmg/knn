@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_none",
+    "dataset": "iris",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8133333333333335,
+        "accuracy_std": 0.08326663997864532,
+        "train_time_mean": 0.20447220000023664,
+        "train_time_std": 0.029299918617556698,
+        "predict_time_mean": 0.0016815000002679882,
+        "predict_time_std": 3.644634343335791e-05
+    }
+}

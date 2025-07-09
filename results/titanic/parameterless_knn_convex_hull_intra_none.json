@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_convex_hull_intra_none",
+    "dataset": "titanic",
+    "hyperparameters": {
+        "metric": "convex_hull_intra",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7425954198473282,
+        "accuracy_std": 0.03732317048206965,
+        "train_time_mean": 1.3568057899996346,
+        "train_time_std": 0.1740041402625465,
+        "predict_time_mean": 0.013397420000910643,
+        "predict_time_std": 0.0022045122419090428
+    }
+}

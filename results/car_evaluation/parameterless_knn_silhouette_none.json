@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_silhouette_none",
+    "dataset": "car_evaluation",
+    "hyperparameters": {
+        "metric": "silhouette",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8501075413362011,
+        "accuracy_std": 0.028199758261401527,
+        "train_time_mean": 2.6392106500010413,
+        "train_time_std": 0.15989692007947123,
+        "predict_time_mean": 0.03308753999990586,
+        "predict_time_std": 0.002669080842176616
+    }
+}

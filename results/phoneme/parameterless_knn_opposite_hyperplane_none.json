@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_none",
+    "dataset": "phoneme",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7459269528308345,
+        "accuracy_std": 0.014398034914943786,
+        "train_time_mean": 23.067755950001082,
+        "train_time_std": 0.41962853792476906,
+        "predict_time_mean": 0.347013579999475,
+        "predict_time_std": 0.016826713358912827
+    }
+}

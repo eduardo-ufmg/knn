@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_margin_clustering",
+    "dataset": "spambase",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "margin_clustering"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8848085447514855,
+        "accuracy_std": 0.01557856464215279,
+        "train_time_mean": 9.325043980000192,
+        "train_time_std": 1.0550736769105395,
+        "predict_time_mean": 0.07881962000028579,
+        "predict_time_std": 0.026984690490529404
+    }
+}

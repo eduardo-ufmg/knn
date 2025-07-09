@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_none",
+    "dataset": "mushroom",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.9918819188191883,
+        "accuracy_std": 0.024354243542435428,
+        "train_time_mean": 36.00584157000012,
+        "train_time_std": 4.83608982407822,
+        "predict_time_mean": 0.5695899000005739,
+        "predict_time_std": 0.10983687920376002
+    }
+}

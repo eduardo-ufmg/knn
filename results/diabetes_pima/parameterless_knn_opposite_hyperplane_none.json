@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_none",
+    "dataset": "diabetes_pima",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7344155844155844,
+        "accuracy_std": 0.034191110961322255,
+        "train_time_mean": 0.6064735600000859,
+        "train_time_std": 0.04343164172289668,
+        "predict_time_mean": 0.0067832600008841835,
+        "predict_time_std": 0.0006145383298271431
+    }
+}

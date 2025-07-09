@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_none",
+    "dataset": "spambase",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8858988022257851,
+        "accuracy_std": 0.01597435569444543,
+        "train_time_mean": 10.335910630000217,
+        "train_time_std": 0.68053202614797,
+        "predict_time_mean": 0.05504862999914621,
+        "predict_time_std": 0.007762005131442992
+    }
+}

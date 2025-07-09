@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_margin_clustering",
+    "dataset": "iris",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "margin_clustering"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8133333333333335,
+        "accuracy_std": 0.07180219742846009,
+        "train_time_mean": 1.3283976900002017,
+        "train_time_std": 0.46673092940228955,
+        "predict_time_mean": 0.002700860000186367,
+        "predict_time_std": 0.0022252568457357845
+    }
+}

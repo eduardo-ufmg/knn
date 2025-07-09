@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_margin_clustering",
+    "dataset": "diabetes_pima",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "margin_clustering"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7227785372522215,
+        "accuracy_std": 0.04551091753637619,
+        "train_time_mean": 1.1451713300000848,
+        "train_time_std": 0.6574274280801622,
+        "predict_time_mean": 0.0027143899995280664,
+        "predict_time_std": 0.00048633763680859673
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_gabriel_graph",
+    "dataset": "diabetes_pima",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7565447710184552,
+        "accuracy_std": 0.04411967237548982,
+        "train_time_mean": 13.284562979999464,
+        "train_time_std": 1.1548615112294678,
+        "predict_time_mean": 0.003537739999956102,
+        "predict_time_std": 0.0013746690751263162
+    }
+}

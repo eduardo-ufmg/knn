@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_hnbf",
+    "dataset": "monk",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "hnbf"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7291754756871035,
+        "accuracy_std": 0.05398742694462424,
+        "train_time_mean": 0.22007377999907476,
+        "train_time_std": 0.02109972988185258,
+        "predict_time_mean": 0.0026908399999229005,
+        "predict_time_std": 0.0001162921072937387
+    }
+}

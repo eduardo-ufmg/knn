@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_dissimilarity_none",
+    "dataset": "credit_g",
+    "hyperparameters": {
+        "metric": "dissimilarity",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7,
+        "accuracy_std": 0.0,
+        "train_time_mean": 1.31084114999976,
+        "train_time_std": 0.17265665557217202,
+        "predict_time_mean": 0.05949500999959127,
+        "predict_time_std": 0.04899755948120825
+    }
+}

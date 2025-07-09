@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_gabriel_graph",
+    "dataset": "yeast",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5071198749770179,
+        "accuracy_std": 0.02621754429355759,
+        "train_time_mean": 76.11200652000007,
+        "train_time_std": 1.7036832153150983,
+        "predict_time_mean": 0.01038987999963865,
+        "predict_time_std": 0.0010520446960402073
+    }
+}

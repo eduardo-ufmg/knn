@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_spread_gabriel_graph",
+    "dataset": "monk",
+    "hyperparameters": {
+        "metric": "spread",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7408033826638476,
+        "accuracy_std": 0.06443010767865313,
+        "train_time_mean": 4.0080982300001775,
+        "train_time_std": 0.179259747481897,
+        "predict_time_mean": 0.002969780001149047,
+        "predict_time_std": 0.00037308209152074216
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_convex_hull_inter_margin_clustering",
+    "dataset": "monk",
+    "hyperparameters": {
+        "metric": "convex_hull_inter",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "margin_clustering"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7431818181818182,
+        "accuracy_std": 0.059480241153979936,
+        "train_time_mean": 0.4094444400001521,
+        "train_time_std": 0.030525005863271996,
+        "predict_time_mean": 0.00245195999959833,
+        "predict_time_std": 0.00020033747057205984
+    }
+}

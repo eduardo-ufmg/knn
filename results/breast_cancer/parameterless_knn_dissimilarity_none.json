@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_dissimilarity_none",
+    "dataset": "breast_cancer",
+    "hyperparameters": {
+        "metric": "dissimilarity",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.9103383458646614,
+        "accuracy_std": 0.03191979251284542,
+        "train_time_mean": 0.45434088999973027,
+        "train_time_std": 0.020066066896331492,
+        "predict_time_mean": 0.00368733999930555,
+        "predict_time_std": 0.00020258086836677042
+    }
+}

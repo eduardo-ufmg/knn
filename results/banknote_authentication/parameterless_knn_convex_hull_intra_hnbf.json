@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_convex_hull_intra_hnbf",
+    "dataset": "banknote_authentication",
+    "hyperparameters": {
+        "metric": "convex_hull_intra",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "hnbf"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8031788850100497,
+        "accuracy_std": 0.029543435864666942,
+        "train_time_mean": 0.2922105800007557,
+        "train_time_std": 0.05430398121414962,
+        "predict_time_mean": 0.005275369999799296,
+        "predict_time_std": 0.000733826705544895
+    }
+}

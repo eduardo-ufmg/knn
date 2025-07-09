@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_convex_hull_inter_none",
+    "dataset": "car_evaluation",
+    "hyperparameters": {
+        "metric": "convex_hull_inter",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7002352466729399,
+        "accuracy_std": 0.001626562710041668,
+        "train_time_mean": 2.3872648800006573,
+        "train_time_std": 0.20274504283179692,
+        "predict_time_mean": 0.03281377000057546,
+        "predict_time_std": 0.005229699060048553
+    }
+}

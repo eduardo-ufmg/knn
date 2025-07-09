@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_margin_clustering",
+    "dataset": "mushroom",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "margin_clustering"
+    },
+    "metrics": {
+        "accuracy_mean": 0.9912590357430668,
+        "accuracy_std": 0.006387086764135004,
+        "train_time_mean": 36.48521617000006,
+        "train_time_std": 11.421853301740812,
+        "predict_time_mean": 0.5321968699998252,
+        "predict_time_std": 0.13594485464907918
+    }
+}

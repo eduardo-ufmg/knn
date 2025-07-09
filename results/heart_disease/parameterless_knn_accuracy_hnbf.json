@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_hnbf",
+    "dataset": "heart_disease",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "hnbf"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5411827956989248,
+        "accuracy_std": 0.010838901688007373,
+        "train_time_mean": 0.4910320600007253,
+        "train_time_std": 0.045116678952126656,
+        "predict_time_mean": 0.0016530899993085768,
+        "predict_time_std": 0.00013538091044242048
+    }
+}

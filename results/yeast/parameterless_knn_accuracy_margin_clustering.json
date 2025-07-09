@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_margin_clustering",
+    "dataset": "yeast",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "margin_clustering"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5679582643868357,
+        "accuracy_std": 0.029097812653114348,
+        "train_time_mean": 1.0200728400006482,
+        "train_time_std": 0.025932105993501257,
+        "predict_time_mean": 0.0036155099998723015,
+        "predict_time_std": 0.000665350590854396
+    }
+}

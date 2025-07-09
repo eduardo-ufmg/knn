@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_spread_none",
+    "dataset": "iris",
+    "hyperparameters": {
+        "metric": "spread",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8333333333333334,
+        "accuracy_std": 0.08027729719194865,
+        "train_time_mean": 0.24140895000018645,
+        "train_time_std": 0.019929016944191157,
+        "predict_time_mean": 0.001703300000008312,
+        "predict_time_std": 0.00015587861240710365
+    }
+}

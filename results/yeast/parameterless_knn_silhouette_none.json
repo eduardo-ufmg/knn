@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_silhouette_none",
+    "dataset": "yeast",
+    "hyperparameters": {
+        "metric": "silhouette",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5057731200588342,
+        "accuracy_std": 0.0204414416390557,
+        "train_time_mean": 1.882022130000405,
+        "train_time_std": 0.23433985475540944,
+        "predict_time_mean": 0.013367829999697278,
+        "predict_time_std": 0.0022074877380059183
+    }
+}

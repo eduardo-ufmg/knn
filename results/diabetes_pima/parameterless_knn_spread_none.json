@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_spread_none",
+    "dataset": "diabetes_pima",
+    "hyperparameters": {
+        "metric": "spread",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7239747095010254,
+        "accuracy_std": 0.033184870645257825,
+        "train_time_mean": 0.5990898700008984,
+        "train_time_std": 0.040737856406667196,
+        "predict_time_mean": 0.004739069999777712,
+        "predict_time_std": 0.0006726544835141269
+    }
+}

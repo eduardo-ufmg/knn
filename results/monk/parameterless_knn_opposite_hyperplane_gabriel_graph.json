@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_gabriel_graph",
+    "dataset": "monk",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7524312896405918,
+        "accuracy_std": 0.057301377225816234,
+        "train_time_mean": 3.935847210000065,
+        "train_time_std": 0.15186849160188154,
+        "predict_time_mean": 0.0035378799995669395,
+        "predict_time_std": 0.0006092823525079295
+    }
+}

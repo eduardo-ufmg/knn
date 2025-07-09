@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_dissimilarity_none",
+    "dataset": "phoneme",
+    "hyperparameters": {
+        "metric": "dissimilarity",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7755329636475662,
+        "accuracy_std": 0.011022899292303217,
+        "train_time_mean": 27.019627200000105,
+        "train_time_std": 2.284366781609095,
+        "predict_time_mean": 0.25443813999991105,
+        "predict_time_std": 0.04568839203480341
+    }
+}

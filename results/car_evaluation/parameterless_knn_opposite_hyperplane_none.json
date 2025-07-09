@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_none",
+    "dataset": "car_evaluation",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7002352466729399,
+        "accuracy_std": 0.001626562710041668,
+        "train_time_mean": 2.5274361200001296,
+        "train_time_std": 0.07960960093341676,
+        "predict_time_mean": 0.031211489999623154,
+        "predict_time_std": 0.0024078411347837614
+    }
+}

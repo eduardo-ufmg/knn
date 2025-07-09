@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_gabriel_graph",
+    "dataset": "ionosphere",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8516666666666666,
+        "accuracy_std": 0.05266212414751126,
+        "train_time_mean": 4.922790539999187,
+        "train_time_std": 0.8352596779985484,
+        "predict_time_mean": 0.03793997000066156,
+        "predict_time_std": 0.027259895665801663
+    }
+}

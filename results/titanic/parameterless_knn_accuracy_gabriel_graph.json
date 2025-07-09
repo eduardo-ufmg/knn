@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_gabriel_graph",
+    "dataset": "titanic",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.770822078684674,
+        "accuracy_std": 0.03427460796079055,
+        "train_time_mean": 35.33707359999935,
+        "train_time_std": 1.0694686205824326,
+        "predict_time_mean": 0.008199230000536772,
+        "predict_time_std": 0.0039872715142927765
+    }
+}

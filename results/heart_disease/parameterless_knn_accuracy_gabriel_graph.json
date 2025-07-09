@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_gabriel_graph",
+    "dataset": "heart_disease",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5644086021505375,
+        "accuracy_std": 0.027348421848303883,
+        "train_time_mean": 3.1745598900000913,
+        "train_time_std": 0.3076451977444827,
+        "predict_time_mean": 0.0021026799993705938,
+        "predict_time_std": 0.0002019754273987812
+    }
+}

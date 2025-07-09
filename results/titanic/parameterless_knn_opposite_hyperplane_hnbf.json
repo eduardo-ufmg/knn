@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_hnbf",
+    "dataset": "titanic",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "hnbf"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7647328244274809,
+        "accuracy_std": 0.03690395625219186,
+        "train_time_mean": 0.7682653800002299,
+        "train_time_std": 0.08899017248406407,
+        "predict_time_mean": 0.010513040000296315,
+        "predict_time_std": 0.0014189662021141356
+    }
+}

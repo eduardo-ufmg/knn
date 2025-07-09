@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_convex_hull_intra_none",
+    "dataset": "monk",
+    "hyperparameters": {
+        "metric": "convex_hull_intra",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7477272727272727,
+        "accuracy_std": 0.06255751524938091,
+        "train_time_mean": 0.41462982999983067,
+        "train_time_std": 0.03963945269394915,
+        "predict_time_mean": 0.0027128700003231643,
+        "predict_time_std": 6.212691892837454e-05
+    }
+}

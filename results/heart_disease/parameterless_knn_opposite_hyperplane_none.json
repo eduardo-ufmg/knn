@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_opposite_hyperplane_none",
+    "dataset": "heart_disease",
+    "hyperparameters": {
+        "metric": "opposite_hyperplane",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.58752688172043,
+        "accuracy_std": 0.062453034730104606,
+        "train_time_mean": 0.21788402999991377,
+        "train_time_std": 0.035459952392961985,
+        "predict_time_mean": 0.0021474599994689924,
+        "predict_time_std": 0.0002952637878558652
+    }
+}

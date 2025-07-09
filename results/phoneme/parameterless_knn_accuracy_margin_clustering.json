@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_margin_clustering",
+    "dataset": "phoneme",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "margin_clustering"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8084692270829056,
+        "accuracy_std": 0.013983475982364962,
+        "train_time_mean": 11.048516580000069,
+        "train_time_std": 0.14275942449445703,
+        "predict_time_mean": 0.02440926000053878,
+        "predict_time_std": 0.0023726112846389567
+    }
+}

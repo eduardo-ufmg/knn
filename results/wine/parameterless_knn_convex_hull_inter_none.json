@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_convex_hull_inter_none",
+    "dataset": "wine",
+    "hyperparameters": {
+        "metric": "convex_hull_inter",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.961111111111111,
+        "accuracy_std": 0.04339027597725921,
+        "train_time_mean": 0.15202863000013167,
+        "train_time_std": 0.0207105619994753,
+        "predict_time_mean": 0.0017246800005523255,
+        "predict_time_std": 0.00031802003021086665
+    }
+}

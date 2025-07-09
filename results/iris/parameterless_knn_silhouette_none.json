@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_silhouette_none",
+    "dataset": "iris",
+    "hyperparameters": {
+        "metric": "silhouette",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8466666666666667,
+        "accuracy_std": 0.07333333333333335,
+        "train_time_mean": 0.24318550000025424,
+        "train_time_std": 0.033546220099225095,
+        "predict_time_mean": 0.0017159900009573903,
+        "predict_time_std": 0.00011190891435563561
+    }
+}

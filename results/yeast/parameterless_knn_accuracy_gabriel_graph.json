@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_gabriel_graph",
+    "dataset": "yeast",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5821612428755285,
+        "accuracy_std": 0.025054484293423683,
+        "train_time_mean": 74.43850593000025,
+        "train_time_std": 1.681573749516897,
+        "predict_time_mean": 0.00478168999979971,
+        "predict_time_std": 0.0010529317269680353
+    }
+}

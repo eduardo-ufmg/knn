@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_gabriel_graph",
+    "dataset": "banknote_authentication",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.9598857505553792,
+        "accuracy_std": 0.0212455343234998,
+        "train_time_mean": 31.645518499999525,
+        "train_time_std": 4.716968936018339,
+        "predict_time_mean": 0.0020170599997072713,
+        "predict_time_std": 0.00023450412513253394
+    }
+}

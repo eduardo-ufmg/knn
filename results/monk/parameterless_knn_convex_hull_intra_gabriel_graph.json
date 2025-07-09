@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_convex_hull_intra_gabriel_graph",
+    "dataset": "monk",
+    "hyperparameters": {
+        "metric": "convex_hull_intra",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "gabriel_graph"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7362579281183932,
+        "accuracy_std": 0.06521950303827176,
+        "train_time_mean": 4.084553289999894,
+        "train_time_std": 0.16798745102179527,
+        "predict_time_mean": 0.0030140700000629295,
+        "predict_time_std": 0.0002686160155757109
+    }
+}

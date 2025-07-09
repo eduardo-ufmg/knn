@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_margin_clustering",
+    "dataset": "wine",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "margin_clustering"
+    },
+    "metrics": {
+        "accuracy_mean": 0.949673202614379,
+        "accuracy_std": 0.038947887360626376,
+        "train_time_mean": 0.6480782700000418,
+        "train_time_std": 0.10414756409622265,
+        "predict_time_mean": 0.0013839899998856708,
+        "predict_time_std": 0.00018128300178398387
+    }
+}

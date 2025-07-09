@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_margin_clustering",
+    "dataset": "monk",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "margin_clustering"
+    },
+    "metrics": {
+        "accuracy_mean": 0.7940803382663848,
+        "accuracy_std": 0.047445930340630126,
+        "train_time_mean": 1.368708880000122,
+        "train_time_std": 0.5480617233523644,
+        "predict_time_mean": 0.0028043199999956414,
+        "predict_time_std": 0.00040474672987584546
+    }
+}

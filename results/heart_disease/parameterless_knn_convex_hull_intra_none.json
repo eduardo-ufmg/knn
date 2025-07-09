@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_convex_hull_intra_none",
+    "dataset": "heart_disease",
+    "hyperparameters": {
+        "metric": "convex_hull_intra",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5708602150537634,
+        "accuracy_std": 0.05723309567150259,
+        "train_time_mean": 0.39653785999980756,
+        "train_time_std": 0.02831284147895473,
+        "predict_time_mean": 0.0020861700002569707,
+        "predict_time_std": 0.0002484734998812136
+    }
+}

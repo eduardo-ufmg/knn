@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_dissimilarity_hnbf",
+    "dataset": "banknote_authentication",
+    "hyperparameters": {
+        "metric": "dissimilarity",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "hnbf"
+    },
+    "metrics": {
+        "accuracy_mean": 0.819221411192214,
+        "accuracy_std": 0.02680090437745874,
+        "train_time_mean": 0.3265384999998787,
+        "train_time_std": 0.04809717992533001,
+        "predict_time_mean": 0.0036963599999580766,
+        "predict_time_std": 0.000639264109491178
+    }
+}

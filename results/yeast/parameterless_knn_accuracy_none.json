@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_accuracy_none",
+    "dataset": "yeast",
+    "hyperparameters": {
+        "metric": "accuracy",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.5848639455782313,
+        "accuracy_std": 0.030112587814328736,
+        "train_time_mean": 1.7141012100000808,
+        "train_time_std": 0.05748994552140524,
+        "predict_time_mean": 0.0050515899998572426,
+        "predict_time_std": 0.000999543925658457
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "model_name": "parameterless_knn_convex_hull_intra_none",
+    "dataset": "breast_cancer",
+    "hyperparameters": {
+        "metric": "convex_hull_intra",
+        "n_optimizer_calls": 10,
+        "support_samples_method": "none"
+    },
+    "metrics": {
+        "accuracy_mean": 0.8998120300751878,
+        "accuracy_std": 0.029447888328737862,
+        "train_time_mean": 0.4615271099999518,
+        "train_time_std": 0.04308951989461946,
+        "predict_time_mean": 0.00405157999957737,
+        "predict_time_std": 0.0008758157874404587
+    }
+}
