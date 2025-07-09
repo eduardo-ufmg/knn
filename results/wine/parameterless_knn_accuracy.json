@@ -6,9 +6,7 @@
     },
     "metrics": {
         "accuracy_mean": 0.983,
-
         "train_time_mean": 5.859,
-
         "predict_time_mean": 0.00271
     }
 }
