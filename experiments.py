@@ -3,7 +3,7 @@ import os
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
-from typing import cast
+from typing import Any, Dict, List, cast
 
 import numpy as np
 import pandas as pd
@@ -86,37 +86,41 @@ def main():
     if not dataset_paths:
         raise RuntimeError("No datasets found!")
 
-    # 1) Build (dataset, model) tasks
+    # 1) Define all model configurations
+    model_configs = []
+    metrics = [
+        "dissimilarity",
+        "silhouette",
+        "spread",
+        "convex_hull_inter",
+        "convex_hull_intra",
+        "opposite_hyperplane",
+        "accuracy",
+    ]
+    ss_methods = ["hnbf", "margin_clustering", "gabriel_graph", "none"]
+    for m in metrics:
+        for ss in ss_methods:
+            name = f"parameterless_knn_{m}_{ss}"
+            # Use a factory lambda to create fresh instances later
+            model_factory = lambda m=m, ss=ss: ParameterlessKNNClassifier(
+                metric=m, support_samples_method=ss, n_optimizer_calls=10
+            )
+            model_configs.append((name, model_factory))
+
+    # Add baseline model
+    baseline_name = "sklearn_knn_wrapper"
+    model_configs.append(
+        (baseline_name, lambda: SklearnKNNParameterlessWrapper(n_optimizer_calls=10))
+    )
+    all_model_names = [name for name, _ in model_configs]
+
+    # 2) Build (dataset, model) tasks
     tasks = []
     for ds in dataset_paths:
-        # prepare model instances fresh for each task
-        metrics = [
-            "dissimilarity",
-            "silhouette",
-            "spread",
-            "convex_hull_inter",
-            "convex_hull_intra",
-            "opposite_hyperplane",
-            "accuracy",
-        ]
-        ss_methods = ["hnbf", "margin_clustering", "gabriel_graph", "none"]
-        for m in metrics:
-            for ss in ss_methods:
-                name = f"parameterless_knn_{m}_{ss}"
-                inst = ParameterlessKNNClassifier(
-                    metric=m, support_samples_method=ss, n_optimizer_calls=10
-                )
-                tasks.append((ds, name, inst))
-        # add baseline
-        tasks.append(
-            (
-                ds,
-                "sklearn_knn_wrapper",
-                SklearnKNNParameterlessWrapper(n_optimizer_calls=10),
-            )
-        )
+        for name, model_factory in model_configs:
+            tasks.append((ds, name, model_factory()))
 
-    # 2) Dispatch all tasks into one pool
+    # 3) Dispatch all tasks into one pool
     cpu_count = os.cpu_count()
     cpu = cpu_count // 2 if cpu_count else 1
     with ProcessPoolExecutor(max_workers=cpu) as exe:
@@ -125,20 +129,18 @@ def main():
             for ds, nm, mdl in tasks
         }
 
-        # 3) As tasks finish, save results and aggregate accuracies
-        all_accuracies = {}  # dataset -> { model_name: [acc1, acc2, ...] }
+        # 4) As tasks finish, save results and aggregate accuracies
+        all_accuracies: Dict[str, Dict[str, List[float]]] = {}
         for future in as_completed(future_to_task):
             ds_name, model_name = future_to_task[future]
             try:
                 res, fold_accuracies = future.result()
 
-                # save JSON
                 outdir = RESULTS_DIR / ds_name
                 outdir.mkdir(exist_ok=True, parents=True)
                 with open(outdir / f"{model_name}.json", "w") as f:
                     json.dump(res, f, indent=4)
 
-                # collect accuracies
                 all_accuracies.setdefault(ds_name, {})[model_name] = fold_accuracies
                 print(
                     f"[OK] {ds_name:15} · {model_name:30} → {res['metrics']['accuracy_mean']:.4f}"
@@ -147,37 +149,63 @@ def main():
             except Exception as e:
                 print(f"[ERROR] {ds_name:15} · {model_name:30} → {e}")
 
-    # 4) Post-hoc statistical tests per dataset
+    # 5) Post-hoc statistical tests per dataset
     alpha = 0.05
-    for ds_name, acc_dict in all_accuracies.items():
-        ref = acc_dict.get("sklearn_knn_wrapper")
-        if not ref:
+    for ds_name, completed_models in all_accuracies.items():
+        ref_accuracies = completed_models.get("sklearn_knn_wrapper")
+        if not ref_accuracies:
+            print(
+                f"[STATS] {ds_name:15} · Reference model 'sklearn_knn_wrapper' missing. Skipping stats."
+            )
             continue
-        stats = []
-        for m, acc in acc_dict.items():
-            if m == "sklearn_knn_wrapper":
-                continue
-            stat, p = wilcoxon(acc, ref, zero_method="zsplit")
 
-            stat, p = cast(float, stat), cast(float, p)
+        stats: List[Dict[str, Any]] = []
+        # Iterate over all models that were supposed to run
+        for model_name in all_model_names:
+            if model_name == "sklearn_knn_wrapper":
+                continue  # Don't compare the reference to itself
 
-            concl = (
-                "equivalent"
-                if p > alpha
-                else ("better" if np.mean(acc) > np.mean(ref) else "worse")
-            )
-            stats.append(
-                {
-                    "comparison": f"{m}_vs_sklearn",
-                    "statistic": float(stat),
-                    "p_value": float(p),
-                    "conclusion": concl,
-                }
-            )
-        # write them out
-        with open(RESULTS_DIR / ds_name / "statistical_comparisons.json", "w") as f:
+            # Check if the model completed successfully for this dataset
+            model_accuracies = completed_models.get(model_name)
+
+            if model_accuracies:
+                # Success: perform the Wilcoxon test
+                stat, p = wilcoxon(
+                    model_accuracies, ref_accuracies, zero_method="zsplit"
+                )
+                stat, p = cast(float, stat), cast(float, p)
+
+                mean_diff = np.mean(model_accuracies) - np.mean(ref_accuracies)
+                conclusion = (
+                    "equivalent"
+                    if p > alpha
+                    else ("better" if mean_diff > 0 else "worse")
+                )
+
+                stats.append(
+                    {
+                        "comparison": f"{model_name}_vs_sklearn",
+                        "statistic": float(stat),
+                        "p_value": float(p),
+                        "conclusion": conclusion,
+                    }
+                )
+            else:
+                # Failure: report that the model's results are missing
+                stats.append(
+                    {
+                        "comparison": f"{model_name}_vs_sklearn",
+                        "statistic": None,
+                        "p_value": None,
+                        "conclusion": "failed",
+                    }
+                )
+
+        # Write out the statistical comparison results
+        stats_path = RESULTS_DIR / ds_name / "statistical_comparisons.json"
+        with open(stats_path, "w") as f:
             json.dump(stats, f, indent=4)
-        print(f"[STATS] {ds_name:15} · comparisons saved")
+        print(f"[STATS] {ds_name:15} · Comparisons saved to {stats_path}")
 
 
 if __name__ == "__main__":
