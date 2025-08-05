@@ -39,7 +39,6 @@ Use the `plot_objective_function.py` script to visualize objective functions:
 ```bash
 python plot_objective_function.py
 ```
-```
 
 ## Project Structure
 
@@ -77,6 +76,5 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 Contributions are welcome! Please fork the repository and submit a pull request.
 
-## Contact
 
 For questions or suggestions, please contact [eduardohbc@ufmg.br].
